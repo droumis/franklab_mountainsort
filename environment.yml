@@ -1,0 +1,17 @@
+name: franklab_mountainsort
+channels:
+- conda-forge
+- flatiron
+- defaults
+- edeno
+dependencies:
+- mountainlab
+- mountainlab_pytools
+- ml_ephys
+- ml_pyms
+- qt-mountainview
+- spikeforestwidgets
+- ml_ms4alg
+- ml_ms3
+- franklab_msdrift
+- franklab_mstaggedcuration

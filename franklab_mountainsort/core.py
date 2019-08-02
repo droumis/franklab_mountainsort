@@ -32,7 +32,7 @@ def move_mda_data(source_animal_path, target_animal_path, animal, dates):
             target_dir = os.path.join(target_animal_path, date)
             os.makedirs(target_dir, exist_ok=True)
             logging.info(f'\nCopying {source_path} to {target_dir}\n')
-            subprocess.call(
+            subprocess.run(
                 f'rsync -avP {source_path} {target_dir}', shell=True)
 
 

@@ -43,7 +43,8 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
                       noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                       extract_marks=True, extract_clips=True,
                       clip_size=100, freq_min=300, freq_max=6000,
-                      adjacency_radius=-1, detect_threshold=3, detect_sign=-1):
+                      adjacency_radius=-1, detect_threshold=3, detect_sign=-1,
+                      sampling_rate=30000):
     '''Runs mountain sort on data.
 
     Parameters
@@ -76,6 +77,8 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
     detect_sign : int, optional
          The direction of spike to detect (-1 for negative, 1 for positive,
          0 for both). -1 is recommended for most recordings.
+    sampling_rate : int, optional
+        Number of samples per second.
 
     '''
     for date in dates:
@@ -99,7 +102,7 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
                 # create params if it doesn't exist
                 params_file = os.path.join(mountain_mda_nt_path, 'params.json')
                 if not os.path.isfile(params_file):
-                    params = {"samplerate": 30000}
+                    params = {'samplerate': sampling_rate}
                     with open(params_file, 'w') as f:
                         json.dump(params, f, indent=4, sort_keys=True)
                 logging.info(f'Creating concatenated epochs .mda: {raw_mda}')

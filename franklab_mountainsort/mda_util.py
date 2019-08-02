@@ -1,52 +1,59 @@
-#! /home/droumis/anaconda3/bin/python3
-#run this from the preprocessing directory containing all dates' data
+'''run this from the preprocessing directory containing all dates' data'''
+import errno
+import os
+
 
 def make_mda_ntrodeEpoch_links():
-    import os
-    #for each date directory
-    for datedir in os.listdir('.'):
+    # for each date directory
+    for datedir in os.listdir(os.path.curdir):
         date = datedir.split('_')[0]
-        #for each ep.mda directory
-        for epdirmda in os.listdir('./'+date):
+        # for each ep.mda directory
+        for epdirmda in os.listdir(os.path.join(os.path.curdir, date)):
             if '.mda' in epdirmda:
-                #print(epdirmda)
                 # for each nt.mda file
-                for eptetmda in os.listdir('./'+date+'/'+epdirmda):
+                for eptetmda in os.listdir(
+                        os.path.join(os.path.curdir, date, epdirmda)):
                     if '.nt' in eptetmda:
                         an = eptetmda.split('_')[1]
                         endf = eptetmda.split('_')[-1]
                         ntr = endf.split('.')[1]
                         cwd = os.getcwd()
-                        srclink = cwd+'/'+datedir+'/'+epdirmda+'/'+eptetmda
-                        mntdir = date + '_' + an + '.mnt'
-                        ntdir = date+'_'+an+ '.'+ntr+'.mnt'
-                        destlink = cwd+'/'+datedir+'/'+mntdir+'/'+ntdir+'/'+eptetmda
-                        # print(srclink)
-                        # print(destlink)
-                        make_sure_path_exists(cwd+'/'+datedir+'/'+mntdir)
-                        make_sure_path_exists(cwd+'/'+datedir+'/'+mntdir+'/'+ntdir)
-                        removeNTfile(destlink) #to overwrite. remove ntlink if it already exists
-                        #create directory of sym links to original mda
-#                         os.symlink(srclink, destlink)
-                        os.symlink(os.path.relpath(srclink, destlink), destlink)
-#        return
+                        srclink = os.path.join(
+                            cwd, datedir, epdirmda, eptetmda)
+                        mntdir = f'{date}_{an}.mnt'
+                        ntdir = f'{date}_{an}.{ntr}.mnt'
+                        destlink = os.path.join(
+                            cwd, datedir, mntdir, ntdir, eptetmda)
+                        make_sure_path_exists(
+                            os.path.join(cwd, datedir, mntdir))
+                        make_sure_path_exists(
+                            os.path.join(cwd, datedir, mntdir, ntdir))
+                        # to overwrite. remove ntlink if it already exists
+                        removeNTfile(destlink)
+                        # create directory of sym links to original mda
+                        # os.symlink(srclink, destlink)
+                        os.symlink(os.path.relpath(
+                            srclink, destlink), destlink)
+
 
 def make_sure_path_exists(path):
-    import os, errno
     try:
         os.makedirs(path)
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             raise
 
+
 def removeNTfile(ntrode_filename):
-    import os, errno
+    import os
+    import errno
     try:
         os.remove(ntrode_filename)
-    except OSError as e:  # this would be "except OSError, e:" before Python 2.6
+    except OSError as e:
         if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
             raise  # re-raise exception if a different error occurred
 
-#def createSymlink():
+
+# def createSymlink():
 if __name__ == "__main__":
     make_mda_ntrodeEpoch_links()

@@ -1,5 +1,5 @@
 '''
-This script calls the helper functions defined in p2p (`proc2py`) that in turn,
+This module calls the helper functions defined in p2p (`proc2py`) that in turn,
 call Mountain Sort processors. This should be a collection of common processing
 steps that are standard across the lab, although parameters can be changed
 flexibly. Default parameters are defined in the arguments of each pypline, but

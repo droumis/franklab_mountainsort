@@ -1,5 +1,5 @@
 '''
-This script acts as the most basic interface between python and mountainlab
+This module acts as the most basic interface between python and mountainlab
 processors. Defining a processors inputs, outputs, and params here allows
 processors written in any language (as long as they follow mountainlab
 conventions) to be made into a callable python function with passable params.

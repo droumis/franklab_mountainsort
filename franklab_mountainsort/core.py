@@ -79,10 +79,12 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
 
     '''
     for date in dates:
+        date = str(date)
         logging.info(f'Running {animal} date:{date} ntrodes:{ntrodes}')
         mountain_mda_path = os.path.join(
-            input_path, str(date), f'{date}_{animal}.mountain')
-        mountain_out_path = os.path.join(output_path, str(date), 'ms4')
+            input_path, date, f'{date}_{animal}.mountain')
+        mountain_out_path = os.path.join(output_path, date, 'ms4')
+
         for nt in ntrodes:
             mountain_mda_nt_path = os.path.join(mountain_mda_path, f'nt{nt}')
             mountain_out_nt_path = os.path.join(mountain_out_path, f'nt{nt}')

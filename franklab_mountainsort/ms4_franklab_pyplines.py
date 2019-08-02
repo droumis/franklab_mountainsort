@@ -77,8 +77,8 @@ def concat_eps(*, dataset_dir, mda_list=None, opts=None, mda_opts=None):
 
     joined = ' '.join(strstart)
     outpath = os.path.join(f'timeseries_out: {dataset_dir}', 'raw.mda')
-    subprocess.call(['ml-run-process', 'ms3.concat_timeseries',
-                     '--inputs', joined, '--outputs', outpath])
+    subprocess.run(['ml-run-process', 'ms3.concat_timeseries',
+                    '--inputs', joined, '--outputs', outpath])
 
 
 def filt_mask_whiten(*, dataset_dir, output_dir, freq_min=300, freq_max=6000,

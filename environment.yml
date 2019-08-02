@@ -14,3 +14,5 @@ dependencies:
 - qt-mountainview
 - franklab_msdrift
 - franklab_mstaggedcuration
+- jupyter
+- jupyterlab

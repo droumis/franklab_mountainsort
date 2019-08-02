@@ -24,6 +24,7 @@ def move_mda_data(source_animal_path, target_animal_path, animal, dates):
 
     '''
     for date in dates:
+        date = str(date)
         source_mda_paths = glob.glob(
             os.path.join(source_animal_path, date, '*.mda'))
         source_mda_paths.sort()

@@ -62,7 +62,7 @@ def concat_eps(*, dataset_dir, mda_list=None, opts=None, mda_opts=None):
             f'scavenging list of mda file from mda directories of'
             f'date:{mda_opts["date"]} ntrode:{mda_opts["ntrode"]}')
         mda_list = get_mda_list(
-            mda_opts['anim'], mda_opts['date'], mda_opts['ntrode'],
+            mda_opts['date'], mda_opts['ntrode'],
             mda_opts['data_location'])
         for entry in mda_list:
             strstart.append(f'timeseries_list:{entry}')

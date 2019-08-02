@@ -9,9 +9,8 @@ dependencies:
 - mountainlab_pytools
 - ml_ephys
 - ml_pyms
-- qt-mountainview
-- spikeforestwidgets
 - ml_ms4alg
 - ml_ms3
+- qt-mountainview
 - franklab_msdrift
 - franklab_mstaggedcuration

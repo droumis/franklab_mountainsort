@@ -40,21 +40,32 @@ ml-list-processors
 ```
 
 You should see at least the following processors:
+
+**ml_ephys**
 + ephys.bandpass_filter
-+ ephys.whiten
-+ ms3.mask_out_artifacts
-+ ms4alg.sort
-+ ms3.cluster_metrics
-+ ms3.isolation_metrics
-+ ms3.combine_cluster_metrics
-+ ms4alg.create_label_map
-+ ms4alg.apply_label_map
-+ pyms.merge_burst_parents
-+ pyms.add_curation_tags
-+ pyms.extract_timeseries
-+ pyms.anneal_segments
-+ pyms.extract_clips
-+ pyms.extract_clipspyms.extract_marks
 + ephys.synthesize_random_waveforms
 + ephys.synthesize_random_firings
 + ephys.synthesize_timeseries
++ ephys.whiten
+
+**ml_ms3**
++ ms3.cluster_metrics
++ ms3.combine_cluster_metrics
++ ms3.isolation_metrics
++ ms3.mask_out_artifacts
+
+**ml_ms4**
++ ms4alg.apply_label_map
++ ms4alg.create_label_map
++ ms4alg.sort
+
+**ml_pyms**
++ pyms.extract_timeseries
++ pyms.extract_clips
+
+**franklab_mstaggedcuration**
++ pyms.add_curation_tags
++ pyms.merge_burst_parents
+
+**franklab_msdrift**
++ pyms.anneal_segments

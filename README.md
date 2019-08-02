@@ -33,4 +33,28 @@ ln -s franklab_mstaggedcuration .
 
 # Check symlinks
 ls -l
+
+# Check processors
+ml-list-processors
+
 ```
+
+You should see at least the following processors:
++ ephys.bandpass_filter
++ ephys.whiten
++ ms3.mask_out_artifacts
++ ms4alg.sort
++ ms3.cluster_metrics
++ ms3.isolation_metrics
++ ms3.combine_cluster_metrics
++ ms4alg.create_label_map
++ ms4alg.apply_label_map
++ pyms.merge_burst_parents
++ pyms.add_curation_tags
++ pyms.extract_timeseries
++ pyms.anneal_segments
++ pyms.extract_clips
++ pyms.extract_clipspyms.extract_marks
++ ephys.synthesize_random_waveforms
++ ephys.synthesize_random_firings
++ ephys.synthesize_timeseries

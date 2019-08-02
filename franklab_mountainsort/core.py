@@ -100,12 +100,12 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
                     params = {"samplerate": 30000}
                     with open(params_file, 'w') as f:
                         json.dump(params, f, indent=4, sort_keys=True)
-                logging.info('Creating concatenated epochs .mda: ', raw_mda)
+                logging.info(f'Creating concatenated epochs .mda: {raw_mda}')
                 concat_eps(dataset_dir=mountain_mda_nt_path,
                            mda_opts=mda_opts)
 
-            logging.info('####### NTRODE_INPUT:', raw_mda)
-            logging.info('####### NTRODE_OUTPUT', mountain_out_nt_path)
+            logging.info(f'####### NTRODE_INPUT: {raw_mda}')
+            logging.info(f'####### NTRODE_OUTPUT: {mountain_out_nt_path}')
 
             filt_mask_whiten(
                 dataset_dir=mountain_mda_nt_path,

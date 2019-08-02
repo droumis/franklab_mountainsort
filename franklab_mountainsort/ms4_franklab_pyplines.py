@@ -258,7 +258,7 @@ def ms4_sort_on_segs(*, dataset_dir, output_dir, geom=None,
     # sample_offsets have to be converted into a string to be properly passed
     # into the processor
     str_sample_offsets = ','.join(map(str, sample_offsets))
-    print(str_sample_offsets)
+    logging.info(str_sample_offsets)
 
     pyms_anneal_segs(
         timeseries_list=timeseries_list,

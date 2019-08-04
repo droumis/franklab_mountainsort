@@ -45,7 +45,7 @@ def read_dataset_params(dataset_dir):
         return json.load(f)
 
 
-def bandpass_filter(*, timeseries, timeseries_out, samplerate, freq_min,
+def bandpass_filter(timeseries, timeseries_out, samplerate, freq_min,
                     freq_max, opts=None):
     '''
 
@@ -79,7 +79,7 @@ def bandpass_filter(*, timeseries, timeseries_out, samplerate, freq_min,
     )
 
 
-def whiten(*, timeseries, timeseries_out, opts=None):
+def whiten(timeseries, timeseries_out, opts=None):
     '''
 
     Parameters
@@ -106,7 +106,7 @@ def whiten(*, timeseries, timeseries_out, opts=None):
     )
 
 
-def mask_out_artifacts(*, timeseries, timeseries_out, threshold, interval_size,
+def mask_out_artifacts(timeseries, timeseries_out, threshold, interval_size,
                        opts=None):
     '''
 
@@ -139,7 +139,7 @@ def mask_out_artifacts(*, timeseries, timeseries_out, threshold, interval_size,
     )
 
 
-def ms4alg(*, timeseries, geom, firings_out, detect_sign, adjacency_radius,
+def ms4alg(timeseries, geom, firings_out, detect_sign, adjacency_radius,
            detect_threshold, opts=None):
     '''
     Parameters
@@ -174,7 +174,7 @@ def ms4alg(*, timeseries, geom, firings_out, detect_sign, adjacency_radius,
     )
 
 
-def compute_cluster_metrics(*, timeseries, firings, metrics_out, samplerate,
+def compute_cluster_metrics(timeseries, firings, metrics_out, samplerate,
                             opts=None):
     '''
 
@@ -237,7 +237,7 @@ def compute_cluster_metrics(*, timeseries, firings, metrics_out, samplerate,
 # UNTESTED?UNUSED BY AKG
 
 
-def automated_curation(*, firings, cluster_metrics, firings_out, opts=None):
+def automated_curation(firings, cluster_metrics, firings_out, opts=None):
     '''
 
     Parameters
@@ -276,7 +276,7 @@ def automated_curation(*, firings, cluster_metrics, firings_out, opts=None):
     )
 
 
-def merge_burst_parents(*, firings, metrics, firings_out, opts=None):
+def merge_burst_parents(firings, metrics, firings_out, opts=None):
     '''
 
     Parameters
@@ -305,7 +305,7 @@ def merge_burst_parents(*, firings, metrics, firings_out, opts=None):
     )
 
 
-def tagged_curation(*, cluster_metrics, metrics_tagged,
+def tagged_curation(cluster_metrics, metrics_tagged,
                     firing_rate_thresh=0.01, isolation_thresh=0.95,
                     noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                     mv2file='', opts=None):
@@ -379,7 +379,7 @@ def get_mda_list(date, ntrode, data_location):
     return mda_list
 
 
-def get_epoch_offsets(*, dataset_dir, opts=None):
+def get_epoch_offsets(dataset_dir, opts=None):
     '''
     Parameters
     ----------
@@ -431,7 +431,7 @@ def get_epoch_offsets(*, dataset_dir, opts=None):
     return sample_offsets, total_samples
 
 
-def pyms_extract_segment(*, timeseries, timeseries_out, t1, t2, opts=None):
+def pyms_extract_segment(timeseries, timeseries_out, t1, t2, opts=None):
     '''
 
     Parameters
@@ -464,7 +464,7 @@ def pyms_extract_segment(*, timeseries, timeseries_out, t1, t2, opts=None):
     )
 
 
-def pyms_anneal_segs(*, timeseries_list, firings_list, firings_out,
+def pyms_anneal_segs(timeseries_list, firings_list, firings_out,
                      dmatrix_out, k1_dmatrix_out, k2_dmatrix_out,
                      dmatrix_templates_out, time_offsets, opts=None):
     '''
@@ -507,7 +507,7 @@ def pyms_anneal_segs(*, timeseries_list, firings_list, firings_out,
     )
 
 
-def clear_seg_files(*, timeseries_list, firings_list, opts=None):
+def clear_seg_files(timeseries_list, firings_list, opts=None):
     '''
 
     Parameters
@@ -527,7 +527,7 @@ def clear_seg_files(*, timeseries_list, firings_list, opts=None):
         os.remove(file)
 
 
-def pyms_extract_clips(*, timeseries, firings, clips_out, opts=None):
+def pyms_extract_clips(timeseries, firings, clips_out, opts=None):
     '''
 
     Parameters
@@ -556,7 +556,7 @@ def pyms_extract_clips(*, timeseries, firings, clips_out, opts=None):
     )
 
 
-def pyms_extract_marks(*, timeseries, firings, marks_out, markstimes_out,
+def pyms_extract_marks(timeseries, firings, marks_out, markstimes_out,
                        opts=None):
     '''
 
@@ -588,7 +588,7 @@ def pyms_extract_marks(*, timeseries, firings, marks_out, markstimes_out,
     )
 
 
-def synthesize_sample_dataset(*, dataset_dir, samplerate=30000, duration=600,
+def synthesize_sample_dataset(dataset_dir, samplerate=30000, duration=600,
                               num_channels=4, opts=None):
     '''
 

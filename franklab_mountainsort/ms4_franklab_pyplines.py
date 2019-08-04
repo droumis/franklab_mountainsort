@@ -28,8 +28,13 @@ from .ms4_franklab_proc2py import (bandpass_filter, clear_seg_files,
                                    tagged_curation, whiten)
 
 
-def concat_eps(*, dataset_dir, mda_list=None, opts=None, mda_opts=None):
-    '''Runs 'ms3.concat_timeseries' using either:
+def concat_eps(dataset_dir, mda_list=None, opts=None, mda_opts=None):
+    '''Concatenate all epochs in a day and save as raw.mda.
+
+    Saves the raw.mda to the output dir, which serves as src for subsequent
+    steps.
+
+    Runs 'ms3.concat_timeseries' using either:
        1: mda_list provided
        2: mda_list empty and date, ntrode specified in opts
        3: string path to prv file containing entries for mda files
@@ -81,7 +86,7 @@ def concat_eps(*, dataset_dir, mda_list=None, opts=None, mda_opts=None):
                     '--inputs', joined, '--outputs', outpath], check=True)
 
 
-def filt_mask_whiten(*, dataset_dir, output_dir, freq_min=300, freq_max=6000,
+def filt_mask_whiten(dataset_dir, output_dir, freq_min=300, freq_max=6000,
                      mask_artifacts=True, opts=None):
     '''
 
@@ -130,7 +135,7 @@ def filt_mask_whiten(*, dataset_dir, output_dir, freq_min=300, freq_max=6000,
 
 
 # full = sort the entire file as one mda
-def ms4_sort_full(*, dataset_dir, output_dir, geom=None, adjacency_radius=-1,
+def ms4_sort_full(dataset_dir, output_dir, geom=None, adjacency_radius=-1,
                   detect_threshold=3, detect_sign=False, opts=None):
     '''
     Parameters
@@ -171,7 +176,7 @@ def ms4_sort_full(*, dataset_dir, output_dir, geom=None, adjacency_radius=-1,
     )
 
 
-def ms4_sort_on_segs(*, dataset_dir, output_dir, geom=None,
+def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
                      adjacency_radius=-1, detect_threshold=3.0,
                      detect_sign=False, rm_segment_intermediates=True,
                      opts=None, mda_opts=None):
@@ -288,7 +293,7 @@ def ms4_sort_on_segs(*, dataset_dir, output_dir, geom=None,
     )
 
 
-def merge_burst_parents(*, dataset_dir, output_dir, opts=None):
+def merge_burst_parents(dataset_dir, output_dir, opts=None):
     '''
 
     Parameters
@@ -319,7 +324,7 @@ def merge_burst_parents(*, dataset_dir, output_dir, opts=None):
     )
 
 
-def add_curation_tags(*, dataset_dir, output_dir, firing_rate_thresh=0.01,
+def add_curation_tags(dataset_dir, output_dir, firing_rate_thresh=0.01,
                       isolation_thresh=0.95, noise_overlap_thresh=0.03,
                       peak_snr_thresh=1.5, metrics_input='', metrics_output='',
                       opts=None):
@@ -363,7 +368,7 @@ def add_curation_tags(*, dataset_dir, output_dir, firing_rate_thresh=0.01,
     )
 
 
-def recalc_metrics(*, dataset_dir, output_dir, firings_in='',
+def recalc_metrics(dataset_dir, output_dir, firings_in='',
                    metrics_to_update='', firing_rate_thresh=0.01,
                    isolation_thresh=0.95, noise_overlap_thresh=0.03,
                    peak_snr_thresh=1.5, mv2_file='', opts=None):
@@ -414,7 +419,7 @@ def recalc_metrics(*, dataset_dir, output_dir, firings_in='',
     )
 
 
-def extract_clips(*, dataset_dir, output_dir, clip_size=100, opts=None):
+def extract_clips(dataset_dir, output_dir, clip_size=100, opts=None):
     '''
 
     Parameters
@@ -436,7 +441,7 @@ def extract_clips(*, dataset_dir, output_dir, clip_size=100, opts=None):
         opts=opts)
 
 
-def extract_marks(*, dataset_dir, output_dir, opts=None):
+def extract_marks(dataset_dir, output_dir, opts=None):
     '''
 
     Parameters

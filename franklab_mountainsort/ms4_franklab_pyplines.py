@@ -24,7 +24,7 @@ from franklab_mountainsort.ms4_franklab_proc2py import (
     bandpass_filter, clear_seg_files, compute_cluster_metrics,
     get_epoch_offsets, get_mda_list, mask_out_artifacts, ms4alg,
     pyms_anneal_segs, pyms_extract_clips, pyms_extract_segment,
-    read_dataset_params, tagged_curation, whiten)
+    pyms_merge_burst_parents, read_dataset_params, tagged_curation, whiten)
 
 
 def concat_eps(dataset_dir, mda_list=None, opts=None, mda_opts=None):
@@ -309,7 +309,7 @@ def merge_burst_parents(dataset_dir, output_dir, opts=None):
     if opts is None:
         opts = {}
 
-    merge_burst_parents(
+    pyms_merge_burst_parents(
         firings=os.path.join(output_dir, 'firings_raw.mda'),
         metrics=os.path.join(output_dir, 'metrics_raw.json'),
         firings_out=os.path.join(output_dir, 'firings_burst_merged.mda'),

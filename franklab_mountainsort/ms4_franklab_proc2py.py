@@ -276,7 +276,7 @@ def automated_curation(firings, cluster_metrics, firings_out, opts=None):
     )
 
 
-def merge_burst_parents(firings, metrics, firings_out, opts=None):
+def pyms_merge_burst_parents(firings, metrics, firings_out, opts=None):
     '''
 
     Parameters

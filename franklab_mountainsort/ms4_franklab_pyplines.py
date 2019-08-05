@@ -45,6 +45,12 @@ def concat_eps(dataset_dir, mda_list=None, opts=None, mda_opts=None):
     opts : None or dict, optional
     mda_opts : None or dict, optional
 
+    Notes
+    -----
+    Format for input and output of ms3.concat_timeseries is:
+        'timeseries_list:{path} timeseries_list:{path} ...'
+    There cannot be a space between the colon and the path.
+
     '''
 
     if mda_list is None:

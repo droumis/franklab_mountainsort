@@ -171,9 +171,9 @@ def make_mda_ntrodeEpoch_links(preprocessing_path):
         '.../{animal}/preprocessing'
 
     '''
-    mda_files = glob.glob(
+    mda_filepaths = glob.glob(
         os.path.join(preprocessing_path, '*', '*', '*.nt*.mda'))
-    for mda_filepath in mda_files:
+    for mda_filepath in mda_filepaths:
         try:
             mda_filename = os.path.basename(mda_filepath)
             date, animal, epoch, ending = mda_filename.split('_')

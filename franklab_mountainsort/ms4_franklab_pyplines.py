@@ -20,11 +20,25 @@ import math
 import os
 import subprocess
 
-from franklab_mountainsort.ms4_franklab_proc2py import (
-    bandpass_filter, clear_seg_files, compute_cluster_metrics,
-    get_epoch_offsets, get_mda_list, mask_out_artifacts, ms4alg,
-    pyms_anneal_segs, pyms_extract_clips, pyms_extract_segment,
-    pyms_merge_burst_parents, read_dataset_params, tagged_curation, whiten)
+from franklab_msdrift.p_anneal_segments import \
+    anneal_segments as pyms_anneal_segs
+
+from franklab_mountainsort.ms4_franklab_proc2py import (bandpass_filter,
+                                                        clear_seg_files,
+                                                        compute_cluster_metrics,
+                                                        get_epoch_offsets,
+                                                        get_mda_list,
+                                                        mask_out_artifacts,
+                                                        ms4alg,
+                                                        pyms_extract_clips,
+                                                        pyms_extract_segment,
+                                                        read_dataset_params,
+                                                        tagged_curation,
+                                                        whiten)
+from franklab_mstaggedcuration.p_add_curation_tags import \
+    add_curation_tags as pyms_add_curation_tags
+from franklab_mstaggedcuration.p_merge_burst_parents import \
+    merge_burst_parents as pyms_merge_burst_parents
 
 
 def concat_eps(dataset_dir, mda_list=None, opts=None, mda_opts=None):
@@ -296,19 +310,15 @@ def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
     )
 
 
-def merge_burst_parents(dataset_dir, output_dir, opts=None):
+def merge_burst_parents(dataset_dir, output_dir):
     '''
 
     Parameters
     ----------
     dataset_dir : str
     output_dir : str
-    opts : None or dict, optional
 
     '''
-    if opts is None:
-        opts = {}
-
     pyms_merge_burst_parents(
         firings=os.path.join(output_dir, 'firings_raw.mda'),
         metrics=os.path.join(output_dir, 'metrics_raw.json'),
@@ -325,8 +335,8 @@ def merge_burst_parents(dataset_dir, output_dir, opts=None):
 
 def add_curation_tags(dataset_dir, output_dir, firing_rate_thresh=0.01,
                       isolation_thresh=0.95, noise_overlap_thresh=0.03,
-                      peak_snr_thresh=1.5, metrics_input='', metrics_output='',
-                      opts=None):
+                      peak_snr_thresh=1.5, metrics_input='metrics_raw.json',
+                      metrics_output='metrics_tagged.json'):
     '''
 
     Parameters
@@ -345,26 +355,16 @@ def add_curation_tags(dataset_dir, output_dir, firing_rate_thresh=0.01,
     -----
     This is split out and not included after metrics calculation
     because of a bug in ms3.combine_cluster_metrics - doesn't work if anything
-    follows it
+    follows it.
 
     '''
-    if opts is None:
-        opts = {}
-    if not metrics_input:
-        metrics_input = 'metrics_raw.json'
-    if not metrics_output:
-        metrics_output = 'metrics_tagged.json'
-
-    tagged_curation(
-        cluster_metrics=os.path.join(dataset_dir, metrics_input),
+    pyms_add_curation_tags(
+        metrics=os.path.join(dataset_dir, metrics_input),
         metrics_tagged=os.path.join(output_dir, metrics_output),
         firing_rate_thresh=firing_rate_thresh,
         isolation_thresh=isolation_thresh,
         noise_overlap_thresh=noise_overlap_thresh,
-        peak_snr_thresh=peak_snr_thresh,
-        mv2file='',
-        opts=opts
-    )
+        peak_snr_thresh=peak_snr_thresh, mv2file='')
 
 
 def recalc_metrics(dataset_dir, output_dir, firings_in='',

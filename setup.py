@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from setuptools import find_packages, setup
 
-INSTALL_REQUIRES = ['mountainlab_pytools']
+INSTALL_REQUIRES = []
 TESTS_REQUIRE = []
 
 setup(

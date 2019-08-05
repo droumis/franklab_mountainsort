@@ -312,9 +312,7 @@ def merge_burst_parents(dataset_dir, output_dir, opts=None):
     pyms_merge_burst_parents(
         firings=os.path.join(output_dir, 'firings_raw.mda'),
         metrics=os.path.join(output_dir, 'metrics_raw.json'),
-        firings_out=os.path.join(output_dir, 'firings_burst_merged.mda'),
-        opts={}
-    )
+        firings_out=os.path.join(output_dir, 'firings_burst_merged.mda'))
 
     ds_params = read_dataset_params(dataset_dir)
     # Compute cluster metrics
@@ -322,9 +320,7 @@ def merge_burst_parents(dataset_dir, output_dir, opts=None):
         timeseries=os.path.join(output_dir, 'pre.mda.prv'),
         firings=os.path.join(output_dir, 'firings_burst_merged.mda'),
         metrics_out=os.path.join(output_dir, 'metrics_merged.json'),
-        samplerate=ds_params['samplerate'],
-        opts={}
-    )
+        samplerate=ds_params['samplerate'])
 
 
 def add_curation_tags(dataset_dir, output_dir, firing_rate_thresh=0.01,
@@ -406,9 +402,7 @@ def recalc_metrics(dataset_dir, output_dir, firings_in='',
         timeseries=os.path.join(output_dir, 'pre.mda.prv'),
         firings=os.path.join(output_dir, firings_in),
         metrics_to_update=os.path.join(output_dir, metrics_to_update),
-        samplerate=ds_params['samplerate'],
-        opts={}
-    )
+        samplerate=ds_params['samplerate'])
 
     tagged_curation(
         cluster_metrics=os.path.join(dataset_dir, metrics_to_update),

@@ -1,3 +1,4 @@
+import errno
 import glob
 import json
 import logging
@@ -79,6 +80,11 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
         Number of samples per second.
 
     '''
+    # Make .mnt symlinks if they don't exist
+    date_folders = os.path.join(input_path, '*')
+    if len(glob.glob(os.path.join(date_folders, '*.mnt'))) == 0:
+        make_mda_ntrodeEpoch_links(input_path)
+
     for date in dates:
         date = str(date)
         logging.info(f'Running {animal} date: {date} ntrodes: {ntrodes}')
@@ -147,3 +153,50 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
                 pyp.extract_clips(dataset_dir=mountain_out_nt_path,
                                   output_dir=mountain_out_nt_path,
                                   clip_size=clip_size)
+
+
+def make_mda_ntrodeEpoch_links(preprocessing_path):
+    '''This makes the .mnt directory and its contents, containing symbolic
+    links to the mda files for each epoch for each ntrode.
+
+    We use this because our raw data is stored by epoch, with all tets in
+    subfolders. Since we generally want to sort across all the epochs in a day,
+    this tool reorganizes the data so that it is first grouped by tetrode, then
+    epoch. This is all done with symlinks, so no duplicate files are generated.
+
+    Parameters
+    ----------
+    preprocessing_path : str
+        Folder path to animal preprocessing folder e.g.
+        '.../{animal}/preprocessing'
+
+    '''
+    mda_files = glob.glob(
+        os.path.join(preprocessing_path, '*', '*', '*.nt*.mda'))
+    for mda_filepath in mda_files:
+        try:
+            mda_filename = os.path.basename(mda_filepath)
+            date, animal, epoch, ending = mda_filename.split('_')
+            _, electrode_name, _ = ending.split('.')
+            dest_path = os.path.join(
+                preprocessing_path, date, f'{date}_{animal}.mnt',
+                f'{date}_{animal}.{electrode_name}.mnt')
+            os.makedirs(dest_path, exist_ok=True)
+            dest_link = os.path.join(dest_path, mda_filename)
+
+            # to overwrite. remove ntlink if it already exists
+            remove_NT_file(dest_link)
+
+            # create directory of sym links to original mda
+            os.symlink(mda_filepath, dest_link)
+
+        except ValueError:
+            pass
+
+
+def remove_NT_file(ntrode_filename):
+    try:
+        os.remove(ntrode_filename)
+    except OSError as e:
+        if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
+            raise  # re-raise exception if a different error occurred

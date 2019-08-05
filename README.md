@@ -69,3 +69,18 @@ You should see at least the following processors:
 
 **franklab_msdrift**
 + pyms.anneal_segments
+
+
+# Next Move data
+
+ml-link-python-module franklab_msdrift `ml-config package_directory`/franklab_msdrift
+ml-link-python-module franklab_mstaggedcuration `ml-config package_directory`/franklab_mstaggedcuration
+
+# If no .mnt directory for day then run:
+make_mda_ntrodeEpoch_links()
+
+# If no .mountain directory for day then run nodejs script
+node ./MS4setup_NTlinks.node.js '/data2/edeno/remy/preprocessing'
+
+Set temp directory to copied data directory
+Run Spike sorting

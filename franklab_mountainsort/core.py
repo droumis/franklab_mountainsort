@@ -4,9 +4,9 @@ import logging
 import os
 import subprocess
 
-from .ms4_franklab_pyplines import (add_curation_tags, concat_eps,
-                                    filt_mask_whiten, merge_burst_parents,
-                                    ms4_sort_on_segs)
+from franklab_mountainsort.ms4_franklab_pyplines import (
+    add_curation_tags, concat_eps, filt_mask_whiten, merge_burst_parents,
+    ms4_sort_on_segs)
 
 logging.basicConfig(level='INFO', format='%(asctime)s %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')

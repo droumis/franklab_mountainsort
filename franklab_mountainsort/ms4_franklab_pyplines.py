@@ -20,12 +20,11 @@ import math
 import os
 import subprocess
 
-from .ms4_franklab_proc2py import (bandpass_filter, clear_seg_files,
-                                   compute_cluster_metrics, get_epoch_offsets,
-                                   get_mda_list, mask_out_artifacts, ms4alg,
-                                   pyms_anneal_segs, pyms_extract_clips,
-                                   pyms_extract_segment, read_dataset_params,
-                                   tagged_curation, whiten)
+from franklab_mountainsort.ms4_franklab_proc2py import (
+    bandpass_filter, clear_seg_files, compute_cluster_metrics,
+    get_epoch_offsets, get_mda_list, mask_out_artifacts, ms4alg,
+    pyms_anneal_segs, pyms_extract_clips, pyms_extract_segment,
+    read_dataset_params, tagged_curation, whiten)
 
 
 def concat_eps(dataset_dir, mda_list=None, opts=None, mda_opts=None):
@@ -65,20 +64,19 @@ def concat_eps(dataset_dir, mda_list=None, opts=None, mda_opts=None):
     if len(mda_list) == 0 and has_opts_keys:
         logging.info(
             f'Finding list of mda file from mda directories of '
-            f'date: {mda_opts["date"]} ntrode: {mda_opts["ntrode"]}')
+            f'date: {mda_opts["date"]}, ntrode: {mda_opts["ntrode"]}')
         mda_list = get_mda_list(
-            mda_opts['date'], mda_opts['ntrode'],
-            mda_opts['data_location'])
+            mda_opts['date'], mda_opts['ntrode'], mda_opts['data_location'])
         for entry in mda_list:
             strstart.append(f'timeseries_list:{entry}')
 
     if isinstance(mda_list, str):
-        logging.info('using mda files listed in prv file')
+        logging.info('Using mda files listed in prv file')
         with open(mda_list) as f:
             mdalist = json.load(f)
         for entries in mdalist['files']:
-            strstart.append('timeseries_list:' +
-                            entries['prv']['original_path'])
+            prv_path = entries['prv']['original_path']
+            strstart.append(f'timeseries_list:{prv_path}')
 
     joined = ' '.join(strstart)
     outpath = os.path.join(f'timeseries_out:{dataset_dir}', 'raw.mda')
@@ -208,8 +206,8 @@ def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
 
     if has_keys:
         logging.info(
-            'scavenging list of mda file from mda directories of'
-            f'date:{mda_opts["date"]} ntrode:{mda_opts["ntrode"]}')
+            'Finding list of mda file from mda directories of '
+            f'date:{mda_opts["date"]}, ntrode:{mda_opts["ntrode"]}')
         mda_list = get_mda_list(
             mda_opts['anim'], mda_opts['date'], mda_opts['ntrode'],
             mda_opts['data_location'])

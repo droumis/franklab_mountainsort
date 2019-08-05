@@ -4,9 +4,11 @@ import logging
 import os
 import subprocess
 
-from franklab_mountainsort.ms4_franklab_pyplines import (
-    add_curation_tags, concat_eps, filt_mask_whiten, merge_burst_parents,
-    ms4_sort_on_segs)
+from franklab_mountainsort.ms4_franklab_pyplines import (add_curation_tags,
+                                                         concat_eps,
+                                                         filt_mask_whiten,
+                                                         merge_burst_parents,
+                                                         ms4_sort_on_segs)
 
 logging.basicConfig(level='INFO', format='%(asctime)s %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
@@ -83,17 +85,21 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
     '''
     for date in dates:
         date = str(date)
-        logging.info(f'Running {animal} date:{date} ntrodes:{ntrodes}')
+        logging.info(f'Running {animal} date: {date} ntrodes: {ntrodes}')
         mountain_mda_path = os.path.join(
             input_path, date, f'{date}_{animal}.mountain')
         mountain_out_path = os.path.join(output_path, date, 'ms4')
 
-        for nt in ntrodes:
-            mountain_mda_nt_path = os.path.join(mountain_mda_path, f'nt{nt}')
-            mountain_out_nt_path = os.path.join(mountain_out_path, f'nt{nt}')
+        for electrode_number in ntrodes:
+            mountain_mda_nt_path = os.path.join(
+                mountain_mda_path, f'nt{electrode_number}')
+            mountain_out_nt_path = os.path.join(
+                mountain_out_path, f'nt{electrode_number}')
             os.makedirs(mountain_out_nt_path, exist_ok=True)
-            mda_opts = {'anim': animal, 'date': date,
-                        'ntrode': nt, 'data_location': input_path}
+            mda_opts = {'anim': animal,
+                        'date': date,
+                        'ntrode': electrode_number,
+                        'data_location': input_path}
             raw_mda = os.path.join(mountain_mda_nt_path, 'raw.mda')
 
             # create concatenated mda if it doesn't exist

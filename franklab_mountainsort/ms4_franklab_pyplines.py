@@ -41,7 +41,7 @@ from franklab_mstaggedcuration.p_merge_burst_parents import \
     merge_burst_parents as pyms_merge_burst_parents
 
 
-def concat_eps(dataset_dir, mda_list=None, opts=None, mda_opts=None):
+def concat_epochs(dataset_dir, mda_list=None, opts=None, mda_opts=None):
     '''Concatenate all epochs in a day and save as raw.mda.
 
     Saves the raw.mda to the output dir, which serves as src for subsequent

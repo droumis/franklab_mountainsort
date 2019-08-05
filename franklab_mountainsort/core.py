@@ -4,11 +4,7 @@ import logging
 import os
 import subprocess
 
-from franklab_mountainsort.ms4_franklab_pyplines import (add_curation_tags,
-                                                         concat_eps,
-                                                         filt_mask_whiten,
-                                                         merge_burst_parents,
-                                                         ms4_sort_on_segs)
+import franklab_mountainsort.ms4_franklab_pyplines as pyp
 
 logging.basicConfig(level='INFO', format='%(asctime)s %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
@@ -112,28 +108,28 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
                     with open(params_file, 'w') as f:
                         json.dump(params, f, indent=4, sort_keys=True)
                 logging.info(f'Creating concatenated epochs .mda: {raw_mda}')
-                concat_eps(dataset_dir=mountain_mda_nt_path,
-                           mda_opts=mda_opts)
+                pyp.concat_epochs(dataset_dir=mountain_mda_nt_path,
+                                  mda_opts=mda_opts)
 
             logging.info(f'####### NTRODE_INPUT: {raw_mda}')
             logging.info(f'####### NTRODE_OUTPUT: {mountain_out_nt_path}')
 
-            filt_mask_whiten(
+            pyp.filt_mask_whiten(
                 dataset_dir=mountain_mda_nt_path,
                 output_dir=mountain_out_nt_path,
                 freq_min=freq_min,
                 freq_max=freq_max)
-            ms4_sort_on_segs(
+            pyp.ms4_sort_on_segs(
                 dataset_dir=mountain_mda_nt_path,
                 output_dir=mountain_out_nt_path,
                 adjacency_radius=adjacency_radius,
                 detect_threshold=detect_threshold,
                 detect_sign=detect_sign,
                 mda_opts=mda_opts)
-            merge_burst_parents(
+            pyp.merge_burst_parents(
                 dataset_dir=mountain_mda_nt_path,
                 output_dir=mountain_out_nt_path)
-            add_curation_tags(
+            pyp.add_curation_tags(
                 dataset_dir=mountain_out_nt_path,
                 output_dir=mountain_out_nt_path,
                 metrics_input=metrics_input,
@@ -144,10 +140,10 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
                 peak_snr_thresh=peak_snr_thresh)
 
             if extract_marks:
-                extract_marks(dataset_dir=mountain_out_nt_path,
-                              output_dir=mountain_out_nt_path)
+                pyp.extract_marks(dataset_dir=mountain_out_nt_path,
+                                  output_dir=mountain_out_nt_path)
 
             if extract_clips:
-                extract_clips(dataset_dir=mountain_out_nt_path,
-                              output_dir=mountain_out_nt_path,
-                              clip_size=clip_size)
+                pyp.extract_clips(dataset_dir=mountain_out_nt_path,
+                                  output_dir=mountain_out_nt_path,
+                                  clip_size=clip_size)

@@ -81,7 +81,7 @@ def concat_eps(dataset_dir, mda_list=None, opts=None, mda_opts=None):
                             entries['prv']['original_path'])
 
     joined = ' '.join(strstart)
-    outpath = os.path.join(f'timeseries_out: {dataset_dir}', 'raw.mda')
+    outpath = os.path.join(f'timeseries_out:{dataset_dir}', 'raw.mda')
     subprocess.run(['ml-run-process', 'ms3.concat_timeseries',
                     '--inputs', joined, '--outputs', outpath], check=True)
 

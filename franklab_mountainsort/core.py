@@ -5,6 +5,8 @@ import logging
 import os
 import subprocess
 
+import pandas as pd
+
 import franklab_mountainsort.ms4_franklab_pyplines as pyp
 
 logging.basicConfig(level='INFO', format='%(asctime)s %(message)s',
@@ -200,3 +202,25 @@ def remove_NT_file(ntrode_filename):
     except OSError as e:
         if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
             raise  # re-raise exception if a different error occurred
+
+
+def get_files_dataframe(animal_path):
+    mda_files = glob.glob(
+        os.path.join(animal_path, '*/*.mda/*.*.mda'))
+    file_info = [get_file_information(mda_file) for mda_file in mda_files
+                 if get_file_information(mda_file) is not None]
+    COLUMNS = ['animal', 'date', 'epoch', 'electrode_number', 'task',
+               'filepath']
+    return pd.DataFrame(file_info, columns=COLUMNS)
+
+
+def get_file_information(mda_file):
+    try:
+        date, animal, epoch, other = os.path.basename(mda_file).split('_')
+        epoch = int(epoch)
+        task, electrode_name, _ = other.split('.')
+        electrode_number = int(electrode_name.strip('nt'))
+
+        return animal, date, epoch, electrode_number, task, mda_file
+    except ValueError:
+        pass

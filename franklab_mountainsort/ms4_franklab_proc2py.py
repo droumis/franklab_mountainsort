@@ -39,8 +39,8 @@ def read_dataset_params(dataset_dir):
     '''
     params_fname = mlp.realizeFile(os.path.join(dataset_dir, 'params.json'))
     if not os.path.exists(params_fname):
-        raise Exception(
-            'Dataset parameter file does not exist: ' + params_fname)
+        raise FileNotFoundError(
+            f'Dataset parameter file does not exist: {params_fname}')
     with open(params_fname) as f:
         return json.load(f)
 

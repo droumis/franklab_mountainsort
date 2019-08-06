@@ -204,23 +204,52 @@ def _remove_NT_file(ntrode_filename):
             raise  # re-raise exception if a different error occurred
 
 
-def get_files_dataframe(animal_path):
-    mda_files = glob.glob(
-        os.path.join(animal_path, '*/*.mda/*.*.mda'))
+def get_mda_files_dataframe(data_path, recursive=False):
+    '''
+
+    Parameters
+    ----------
+    data_path : str
+    recursive : bool, optional
+        Recursive search using glob.
+
+    Returns
+    -------
+    mda_files_dataframe : pandas.DataFrame
+
+    Examples
+    --------
+    ```
+    all_animal_info = get_mda_files_dataframe(
+        '/data2/data1_backup/anna/*/preprocessing/')
+    ```
+
+    ```
+    single_animal_info = get_mda_files_dataframe(
+        '/data2/data1_backup/anna/remy/preprocessing/')
+    ```
+    '''
+
+    mda_files = glob.glob(os.path.join(data_path, '*', '*.mda', '*.*.mda'),
+                          recursive=recursive)
     file_info = [get_file_information(mda_file) for mda_file in mda_files
                  if get_file_information(mda_file) is not None]
     COLUMNS = ['animal', 'date', 'epoch', 'electrode_number', 'task',
-               'filepath']
-    return pd.DataFrame(file_info, columns=COLUMNS)
+               'relative_filepath']
+    return (pd.DataFrame(file_info, columns=COLUMNS)
+            .set_index(['animal', 'date', 'epoch', 'electrode_number'])
+            .sort_index())
 
 
 def get_file_information(mda_file):
     try:
         date, animal, epoch, other = os.path.basename(mda_file).split('_')
-        epoch = int(epoch)
+        date, epoch = int(date), int(epoch)
         task, electrode_name, _ = other.split('.')
         electrode_number = int(electrode_name.strip('nt'))
+        relative_filepath = os.path.join(
+            animal, 'preprocessing', str(date), os.path.basename(mda_file))
 
-        return animal, date, epoch, electrode_number, task, mda_file
+        return animal, date, epoch, electrode_number, task, relative_filepath
     except ValueError:
         pass

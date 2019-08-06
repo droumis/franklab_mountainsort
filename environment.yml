@@ -16,3 +16,4 @@ dependencies:
 - franklab_mstaggedcuration
 - jupyter
 - jupyterlab
+- pandas

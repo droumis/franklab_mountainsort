@@ -187,7 +187,7 @@ def make_mda_ntrodeEpoch_links(preprocessing_path):
             dest_link = os.path.join(dest_path, mda_filename)
 
             # to overwrite. remove ntlink if it already exists
-            remove_NT_file(dest_link)
+            _remove_NT_file(dest_link)
 
             # create directory of sym links to original mda
             os.symlink(mda_filepath, dest_link)
@@ -196,7 +196,7 @@ def make_mda_ntrodeEpoch_links(preprocessing_path):
             pass
 
 
-def remove_NT_file(ntrode_filename):
+def _remove_NT_file(ntrode_filename):
     try:
         os.remove(ntrode_filename)
     except OSError as e:

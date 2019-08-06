@@ -101,8 +101,8 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     date = str(date)
 
     # Setup log file
-    log_directory = os.makedirs(os.path.join(input_path, 'logs'),
-                                exist_ok=True)
+    log_directory = os.path.join(input_path, 'logs')
+    os.makedirs(log_directory, exist_ok=True)
     log_file = os.path.join(
         log_directory, f'{animal}_{date}_nt{electrode_number}.log')
     logging.basicConfig(filename=log_file, level='INFO',

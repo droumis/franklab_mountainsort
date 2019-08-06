@@ -15,10 +15,10 @@ Demetris Roumis
            longer handles the prv list of mdas
 '''
 import json
-import logging
 import math
 import os
 import subprocess
+from logging import getLogger
 
 from franklab_msdrift.p_anneal_segments import \
     anneal_segments as pyms_anneal_segs
@@ -39,6 +39,8 @@ from franklab_mstaggedcuration.p_add_curation_tags import \
     add_curation_tags as pyms_add_curation_tags
 from franklab_mstaggedcuration.p_merge_burst_parents import \
     merge_burst_parents as pyms_merge_burst_parents
+
+logger = getLogger(__name__)
 
 
 def concat_epochs(dataset_dir, mda_list=None, opts=None, mda_opts=None):
@@ -76,13 +78,13 @@ def concat_epochs(dataset_dir, mda_list=None, opts=None, mda_opts=None):
 
     strstart = []
     if isinstance(mda_list, list) and len(mda_list) > 0:
-        logging.info('...Using provided list of mda files')
+        logger.info('...Using provided list of mda files')
         for entry in mda_list:
             strstart.append(f'timeseries_list:{entry}')
     has_opts_keys = (
         {'anim', 'date', 'ntrode', 'data_location'}.issubset(mda_opts))
     if len(mda_list) == 0 and has_opts_keys:
-        logging.info(
+        logger.info(
             f'...Finding list of mda files from mda directories of '
             f'date: {mda_opts["date"]}, ntrode: {mda_opts["ntrode"]}')
         mda_list = get_mda_list(
@@ -91,7 +93,7 @@ def concat_epochs(dataset_dir, mda_list=None, opts=None, mda_opts=None):
             strstart.append(f'timeseries_list:{entry}')
 
     if isinstance(mda_list, str):
-        logging.info('...Using mda files listed in prv file')
+        logger.info('...Using mda files listed in prv file')
         with open(mda_list) as f:
             mdalist = json.load(f)
         for entries in mdalist['files']:
@@ -225,7 +227,7 @@ def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
     has_keys = {'anim', 'date', 'ntrode', 'data_location'}.issubset(mda_opts)
 
     if has_keys:
-        logging.info(
+        logger.info(
             'Finding list of mda file from mda directories of '
             f'date:{mda_opts["date"]}, ntrode:{mda_opts["ntrode"]}')
         mda_list = get_mda_list(
@@ -251,8 +253,8 @@ def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
 
         t1_min = t1 / ds_params['samplerate'] / 60
         t2_min = t2 / ds_params['samplerate'] / 60
-        logging.info(f'Segment {segind + 1}: t1={t1}, t2={t2}, '
-                     f't1_min={t1_min:.3f}, t2_min={t2_min:.3f}')
+        logger.info(f'Segment {segind + 1}: t1={t1}, t2={t2}, '
+                    f't1_min={t1_min:.3f}, t2_min={t2_min:.3f}')
 
         pre_outpath = os.path.join(dataset_dir, f'pri-{segind + 1}.mda')
         pyms_extract_segment(
@@ -280,7 +282,7 @@ def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
     # sample_offsets have to be converted into a string to be properly passed
     # into the processor
     str_sample_offsets = ','.join(map(str, sample_offsets))
-    logging.info(str_sample_offsets)
+    logger.info(str_sample_offsets)
 
     pyms_anneal_segs(
         timeseries_list=timeseries_list,

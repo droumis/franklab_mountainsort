@@ -76,34 +76,31 @@ def concat_epochs(dataset_dir, mda_list=None, opts=None, mda_opts=None):
     if mda_opts is None:
         mda_opts = {}
 
-    strstart = []
-    if isinstance(mda_list, list) and len(mda_list) > 0:
-        logger.info('...Using provided list of mda files')
-        for entry in mda_list:
-            strstart.append(f'timeseries_list:{entry}')
     has_opts_keys = (
         {'anim', 'date', 'ntrode', 'data_location'}.issubset(mda_opts))
-    if len(mda_list) == 0 and has_opts_keys:
+    if isinstance(mda_list, list) and len(mda_list) > 0:
+        logger.info('...Using provided list of mda files')
+        str_start = [f'timeseries_list:{entry}' for entry in mda_list]
+    elif len(mda_list) == 0 and has_opts_keys:
         logger.info(
             f'...Finding list of mda files from mda directories of '
             f'date: {mda_opts["date"]}, ntrode: {mda_opts["ntrode"]}')
         mda_list = get_mda_list(
             mda_opts['date'], mda_opts['ntrode'], mda_opts['data_location'])
-        for entry in mda_list:
-            strstart.append(f'timeseries_list:{entry}')
-
-    if isinstance(mda_list, str):
+        str_start = [f'timeseries_list:{entry}' for entry in mda_list]
+    elif isinstance(mda_list, str):
         logger.info('...Using mda files listed in prv file')
         with open(mda_list) as f:
             mdalist = json.load(f)
+        str_start = []
         for entries in mdalist['files']:
             prv_path = entries['prv']['original_path']
-            strstart.append(f'timeseries_list:{prv_path}')
+            str_start.append(f'timeseries_list:{prv_path}')
 
-    joined = ' '.join(strstart)
-    outpath = os.path.join(f'timeseries_out:{dataset_dir}', 'raw.mda')
+    joined = ' '.join(str_start)
+    out_path = os.path.join(f'timeseries_out:{dataset_dir}', 'raw.mda')
     subprocess.run(['ml-run-process', 'ms3.concat_timeseries',
-                    '--inputs', joined, '--outputs', outpath], check=True)
+                    '--inputs', joined, '--outputs', out_path], check=True)
 
 
 def filt_mask_whiten(dataset_dir, output_dir, freq_min=300, freq_max=6000,

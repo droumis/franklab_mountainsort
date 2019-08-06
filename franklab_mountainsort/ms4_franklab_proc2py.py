@@ -17,9 +17,9 @@ script
 AKGillespie based on code from JMagland
 '''
 
+import glob
 import json
 import os
-from collections import defaultdict
 
 from mountainlab_pytools import mlproc as mlp
 from mountainlab_pytools import mdaio
@@ -361,19 +361,10 @@ def get_mda_list(date, ntrode, data_location):
 
     '''
     date = str(date)
-    mda_src_dict = defaultdict(dict)
-
-    for epdirmda in os.listdir(os.path.join(data_location, date)):
-        if '.mda' in epdirmda:
-            # for each nt.mda file
-            for eptetmda in os.listdir(
-                    os.path.join(data_location, date, epdirmda)):
-                if '.nt' in eptetmda:
-                    ep = eptetmda.split('_')[2].split('.')[0]
-                    ntr = eptetmda.split('_')[-1].split('.')[1]
-                    mda_src_dict[ntr][ep] = os.path.join(
-                        data_location, date, epdirmda, eptetmda)
-    mda_list = list(mda_src_dict[f'nt{ntrode}'].values())
+    mda_list = glob.glob(
+        os.path.join(data_location, date, '*', f'*.nt{ntrode}.mda'))
+    mda_list = [file for file in mda_list
+                if len(os.path.basename(file).split('_')) == 4]
     mda_list.sort()
 
     return mda_list

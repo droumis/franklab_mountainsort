@@ -8,9 +8,6 @@ import pandas as pd
 
 import franklab_mountainsort.ms4_franklab_pyplines as pyp
 
-logging.basicConfig(level='INFO', format='%(asctime)s %(message)s',
-                    datefmt='%d-%b-%y %H:%M:%S')
-
 
 def move_mda_data(source_animal_path, target_animal_path, animal, dates):
     '''Move data from preprocessing to scratch.
@@ -80,9 +77,6 @@ def spike_sort_all(mda_file_info, input_path, output_path,
         Number of samples per second.
 
     '''
-    logging.info('Parameters:')
-    logging.info(locals())
-
     electrodes = mda_file_info.groupby(
         ['animal', 'date', 'electrode_number'])
     for (animal, date, electrode_number), electrodes_df in electrodes:
@@ -105,9 +99,19 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
                          adjacency_radius=-1, detect_threshold=3,
                          detect_sign=-1, sampling_rate=30000):
     date = str(date)
+
+    # Setup log file
+    log_directory = os.makedirs(os.path.join(input_path, 'logs'),
+                                exist_ok=True)
+    log_file = os.path.join(
+        log_directory, f'{animal}_{date}_nt{electrode_number}.log')
+    logging.basicConfig(filename=log_file, level='INFO',
+                        format='%(asctime)s %(message)s',
+                        datefmt='%d-%b-%y %H:%M:%S')
     logging.info(
         f'Processing animal: {animal}, date: {date}, '
         f'electrode: {electrode_number}')
+    logging.info(f'Parameters: {locals()}')
 
     mountain_mda_electrode_dir = os.path.join(
         input_path, date, f'{date}_{animal}.mountain',

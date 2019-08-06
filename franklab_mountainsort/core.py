@@ -232,8 +232,8 @@ def get_mda_files_dataframe(data_path, recursive=False):
 
     mda_files = glob.glob(os.path.join(data_path, '*', '*.mda', '*.*.mda'),
                           recursive=recursive)
-    file_info = [get_file_information(mda_file) for mda_file in mda_files
-                 if get_file_information(mda_file) is not None]
+    file_info = [_get_file_information(mda_file) for mda_file in mda_files
+                 if _get_file_information(mda_file) is not None]
     COLUMNS = ['animal', 'date', 'epoch', 'electrode_number', 'task',
                'relative_filepath']
     return (pd.DataFrame(file_info, columns=COLUMNS)
@@ -241,7 +241,7 @@ def get_mda_files_dataframe(data_path, recursive=False):
             .sort_index())
 
 
-def get_file_information(mda_file):
+def _get_file_information(mda_file):
     try:
         date, animal, epoch, other = os.path.basename(mda_file).split('_')
         date, epoch = int(date), int(epoch)

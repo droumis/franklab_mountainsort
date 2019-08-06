@@ -36,16 +36,16 @@ def move_mda_data(source_animal_path, target_animal_path, animal, dates):
                 f'rsync -avP {source_path} {target_dir}', shell=True)
 
 
-def run_spike_sorting(mda_file_info, input_path, output_path,
-                      metrics_input='metrics_merged.json',
-                      metrics_output='metrics_merged_tagged.json',
-                      firing_rate_thresh=0.01, isolation_thresh=0.95,
-                      noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
-                      extract_marks=True, extract_clips=True,
-                      clip_size=100, freq_min=300, freq_max=6000,
-                      adjacency_radius=-1, detect_threshold=3, detect_sign=-1,
-                      sampling_rate=30000):
-    '''Runs mountain sort on data.
+def spike_sort_all(mda_file_info, input_path, output_path,
+                   metrics_input='metrics_merged.json',
+                   metrics_output='metrics_merged_tagged.json',
+                   firing_rate_thresh=0.01, isolation_thresh=0.95,
+                   noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
+                   extract_marks=True, extract_clips=True,
+                   clip_size=100, freq_min=300, freq_max=6000,
+                   adjacency_radius=-1, detect_threshold=3, detect_sign=-1,
+                   sampling_rate=30000):
+    '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
     ----------

@@ -102,7 +102,7 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
                         'data_location': input_path}
             raw_mda = os.path.join(mountain_mda_nt_path, 'raw.mda')
 
-            # create concatenated mda if it doesn't exist
+            # Concatenate mda files from the same epoch
             if not os.path.isfile(raw_mda):
                 os.makedirs(mountain_mda_nt_path, exist_ok=True)
                 # create params if it doesn't exist
@@ -115,9 +115,8 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
                 pyp.concat_epochs(dataset_dir=mountain_mda_nt_path,
                                   mda_opts=mda_opts)
 
-            logging.info(f'####### NTRODE_INPUT: {raw_mda}')
-            logging.info(f'####### NTRODE_OUTPUT: {mountain_out_nt_path}')
-
+            logging.info(
+                f'Sorting {raw_mda}. Output at {mountain_out_nt_path}')
             pyp.filt_mask_whiten(
                 dataset_dir=mountain_mda_nt_path,
                 output_dir=mountain_out_nt_path,
@@ -144,13 +143,16 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
                 peak_snr_thresh=peak_snr_thresh)
 
             if extract_marks:
+                logging.info('Extracting marks...')
                 pyp.extract_marks(dataset_dir=mountain_out_nt_path,
                                   output_dir=mountain_out_nt_path)
 
             if extract_clips:
+                logging.info('Extracting clips...')
                 pyp.extract_clips(dataset_dir=mountain_out_nt_path,
                                   output_dir=mountain_out_nt_path,
                                   clip_size=clip_size)
+            logging.info('Done')
 
 
 def get_mda_files_dataframe(data_path, recursive=False):

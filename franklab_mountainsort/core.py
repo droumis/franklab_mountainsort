@@ -82,13 +82,15 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
         Number of samples per second.
 
     '''
-    # Make .mnt symlinks if they don't exist
-    date_folders = os.path.join(input_path, '*')
-    if len(glob.glob(os.path.join(date_folders, '*.mnt'))) == 0:
-        make_mda_ntrodeEpoch_links(input_path)
 
     for date in dates:
         date = str(date)
+
+        # Make .mnt symlinks if they don't exist
+        mnt_path = os.path.join(input_path, date, f'{date}_{animal}.mnt')
+        if not os.path.isdir(mnt_path):
+            make_mda_ntrodeEpoch_links(input_path)
+
         logging.info(f'Running {animal} date: {date} ntrodes: {ntrodes}')
         mountain_mda_path = os.path.join(
             input_path, date, f'{date}_{animal}.mountain')

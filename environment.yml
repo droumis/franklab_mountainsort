@@ -17,3 +17,4 @@ dependencies:
 - jupyter
 - jupyterlab
 - pandas
+- "python >= 3.6"

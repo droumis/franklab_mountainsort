@@ -36,7 +36,7 @@ def move_mda_data(source_animal_path, target_animal_path, animal, dates):
                 f'rsync -avP {source_path} {target_dir}', shell=True)
 
 
-def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
+def run_spike_sorting(mda_file_info, input_path, output_path,
                       metrics_input='metrics_merged.json',
                       metrics_output='metrics_merged_tagged.json',
                       firing_rate_thresh=0.01, isolation_thresh=0.95,
@@ -49,9 +49,8 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
 
     Parameters
     ----------
-    animal : str
-    dates : list of str
-    ntrodes : list of int
+    mda_file_info : pandas.DataFrame
+        Dataframe generated using function `get_mda_files_dataframe`
     input_path : str
     output_path : str
     metrics_input : str, optional
@@ -81,78 +80,107 @@ def run_spike_sorting(animal, dates, ntrodes, input_path, output_path,
         Number of samples per second.
 
     '''
+    logging.info('Parameters:')
+    logging.info(locals())
 
-    for date in dates:
-        date = str(date)
+    electrodes = mda_file_info.groupby(
+        ['animal', 'date', 'electrode_number'])
+    for (animal, date, electrode_number), electrodes_df in electrodes:
+        spike_sort_electrode(animal, date, electrode_number, input_path,
+                             output_path, metrics_input, metrics_output,
+                             firing_rate_thresh, isolation_thresh,
+                             noise_overlap_thresh, peak_snr_thresh,
+                             extract_marks, extract_clips, clip_size, freq_min,
+                             freq_max, adjacency_radius, detect_threshold,
+                             detect_sign, sampling_rate)
 
-        logging.info(f'Running {animal} date: {date} ntrodes: {ntrodes}')
-        mountain_mda_path = os.path.join(
-            input_path, date, f'{date}_{animal}.mountain')
-        mountain_out_path = os.path.join(output_path, date, 'ms4')
 
-        for electrode_number in ntrodes:
-            mountain_mda_nt_path = os.path.join(
-                mountain_mda_path, f'nt{electrode_number}')
-            mountain_out_nt_path = os.path.join(
-                mountain_out_path, f'nt{electrode_number}')
-            os.makedirs(mountain_out_nt_path, exist_ok=True)
-            mda_opts = {'anim': animal,
-                        'date': date,
-                        'ntrode': electrode_number,
-                        'data_location': input_path}
-            raw_mda = os.path.join(mountain_mda_nt_path, 'raw.mda')
+def spike_sort_electrode(animal, date, electrode_number, input_path,
+                         output_path, metrics_input='metrics_merged.json',
+                         metrics_output='metrics_merged_tagged.json',
+                         firing_rate_thresh=0.01, isolation_thresh=0.95,
+                         noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
+                         extract_marks=True, extract_clips=True,
+                         clip_size=100, freq_min=300, freq_max=6000,
+                         adjacency_radius=-1, detect_threshold=3,
+                         detect_sign=-1, sampling_rate=30000):
+    date = str(date)
+    logging.info(
+        f'Processing animal: {animal}, date: {date}, '
+        f'electrode: {electrode_number}')
 
-            # Concatenate mda files from the same epoch
-            if not os.path.isfile(raw_mda):
-                os.makedirs(mountain_mda_nt_path, exist_ok=True)
-                # create params if it doesn't exist
-                params_file = os.path.join(mountain_mda_nt_path, 'params.json')
-                if not os.path.isfile(params_file):
-                    params = {'samplerate': sampling_rate}
-                    with open(params_file, 'w') as f:
-                        json.dump(params, f, indent=4, sort_keys=True)
-                logging.info(f'Creating concatenated epochs .mda: {raw_mda}')
-                pyp.concat_epochs(dataset_dir=mountain_mda_nt_path,
-                                  mda_opts=mda_opts)
+    mountain_mda_electrode_dir = os.path.join(
+        input_path, date, f'{date}_{animal}.mountain',
+        f'nt{electrode_number}')
+    mda_opts = {'anim': animal,
+                'date': date,
+                'ntrode': electrode_number,
+                'data_location': input_path}
+    raw_mda = os.path.join(mountain_mda_electrode_dir, 'raw.mda')
 
-            logging.info(
-                f'Sorting {raw_mda}. Output at {mountain_out_nt_path}')
-            pyp.filt_mask_whiten(
-                dataset_dir=mountain_mda_nt_path,
-                output_dir=mountain_out_nt_path,
-                freq_min=freq_min,
-                freq_max=freq_max)
-            pyp.ms4_sort_on_segs(
-                dataset_dir=mountain_mda_nt_path,
-                output_dir=mountain_out_nt_path,
-                adjacency_radius=adjacency_radius,
-                detect_threshold=detect_threshold,
-                detect_sign=detect_sign,
-                mda_opts=mda_opts)
-            pyp.merge_burst_parents(
-                dataset_dir=mountain_mda_nt_path,
-                output_dir=mountain_out_nt_path)
-            pyp.add_curation_tags(
-                dataset_dir=mountain_out_nt_path,
-                output_dir=mountain_out_nt_path,
-                metrics_input=metrics_input,
-                metrics_output=metrics_output,
-                firing_rate_thresh=firing_rate_thresh,
-                isolation_thresh=isolation_thresh,
-                noise_overlap_thresh=noise_overlap_thresh,
-                peak_snr_thresh=peak_snr_thresh)
+    # Concatenate mda files from the same epoch
+    if not os.path.isfile(raw_mda):
+        logging.info('Concatenated .mda file does not exist.'
+                     f'Creating {raw_mda}')
+        os.makedirs(mountain_mda_electrode_dir, exist_ok=True)
+        # create params if it doesn't exist
+        params_file = os.path.join(
+            mountain_mda_electrode_dir, 'params.json')
+        if not os.path.isfile(params_file):
+            params = {'samplerate': sampling_rate}
+            with open(params_file, 'w') as f:
+                json.dump(params, f, indent=4, sort_keys=True)
+        pyp.concat_epochs(dataset_dir=mountain_mda_electrode_dir,
+                          mda_opts=mda_opts)
 
-            if extract_marks:
-                logging.info('Extracting marks...')
-                pyp.extract_marks(dataset_dir=mountain_out_nt_path,
-                                  output_dir=mountain_out_nt_path)
+    # Make sure .mountain output directory exists
+    mountain_out_electrode_dir = os.path.join(
+        output_path, date, 'ms4', f'nt{electrode_number}')
+    os.makedirs(mountain_out_electrode_dir, exist_ok=True)
 
-            if extract_clips:
-                logging.info('Extracting clips...')
-                pyp.extract_clips(dataset_dir=mountain_out_nt_path,
-                                  output_dir=mountain_out_nt_path,
-                                  clip_size=clip_size)
-            logging.info('Done')
+    logging.info('Preprocessing waveforms...')
+    pyp.filt_mask_whiten(
+        dataset_dir=mountain_mda_electrode_dir,
+        output_dir=mountain_out_electrode_dir,
+        freq_min=freq_min,
+        freq_max=freq_max)
+
+    logging.info('Sorting spikes...')
+    pyp.ms4_sort_on_segs(
+        dataset_dir=mountain_mda_electrode_dir,
+        output_dir=mountain_out_electrode_dir,
+        adjacency_radius=adjacency_radius,
+        detect_threshold=detect_threshold,
+        detect_sign=detect_sign,
+        mda_opts=mda_opts)
+
+    logging.info('Merging burst parents...')
+    pyp.merge_burst_parents(
+        dataset_dir=mountain_mda_electrode_dir,
+        output_dir=mountain_out_electrode_dir)
+
+    logging.info('Adding curation tags...')
+    pyp.add_curation_tags(
+        dataset_dir=mountain_out_electrode_dir,
+        output_dir=mountain_out_electrode_dir,
+        metrics_input=metrics_input,
+        metrics_output=metrics_output,
+        firing_rate_thresh=firing_rate_thresh,
+        isolation_thresh=isolation_thresh,
+        noise_overlap_thresh=noise_overlap_thresh,
+        peak_snr_thresh=peak_snr_thresh)
+
+    if extract_marks:
+        logging.info('Extracting marks...')
+        pyp.extract_marks(dataset_dir=mountain_out_electrode_dir,
+                          output_dir=mountain_out_electrode_dir)
+
+    if extract_clips:
+        logging.info('Extracting clips...')
+        pyp.extract_clips(dataset_dir=mountain_out_electrode_dir,
+                          output_dir=mountain_out_electrode_dir,
+                          clip_size=clip_size)
+    logging.info('Done')
 
 
 def get_mda_files_dataframe(data_path, recursive=False):

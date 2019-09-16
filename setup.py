@@ -6,7 +6,7 @@ TESTS_REQUIRE = []
 
 setup(
     name='franklab_mountainsort',
-    version='0.1.0.dev0',
+    version='0.1.1.dev0',
     license='',
     description=(''),
     author='',

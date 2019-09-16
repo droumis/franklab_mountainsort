@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from setuptools import find_packages, setup
 
-INSTALL_REQUIRES = []
+INSTALL_REQUIRES = ['franklab_msdrift', 'franklab_mstaggedcuration']
 TESTS_REQUIRE = []
 
 setup(

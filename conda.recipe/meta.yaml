@@ -8,7 +8,7 @@ package:
   version: {{ version }}
 
 source:
-  url: https://github.com/{{ repo_owner }}/{{ repo_name }}/archive/v{{ version }}.tar.gz
+  url: https://github.com/{{ repo_owner }}/{{ repo_name }}/archive/{{ version }}.tar.gz
 
 build:
   number: 1

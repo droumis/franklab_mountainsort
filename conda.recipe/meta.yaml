@@ -1,0 +1,41 @@
+{% set name = "franklab_mountainsort" %}
+{% set repo_name = "franklab_mountainsort" %}
+{% set repo_owner = "edeno" %}
+{% set version = "0.1.1.dev0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/{{ repo_owner }}/{{ repo_name }}/archive/v{{ version }}.tar.gz
+
+build:
+  number: 1
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - python
+  run:
+    - mountainlab
+    - mountainlab_pytools
+    - ml_ephys
+    - ml_pyms
+    - ml_ms4alg
+    - ml_ms3
+    - qt-mountainview
+    - franklab_msdrift
+    - franklab_mstaggedcuration
+    - pandas
+
+test:
+  imports:
+    - franklab_mountainsort
+    - franklab_msdrift
+    - franklab_mstaggedcuration
+
+about:
+  home: https://github.com/edeno/franklab_mountainsort
+  license: MIT
+  summary: 'Loren Frank Lab pipleline for using Mountain Sort'

@@ -98,6 +98,42 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
                          clip_size=100, freq_min=300, freq_max=6000,
                          adjacency_radius=-1, detect_threshold=3,
                          detect_sign=-1, sampling_rate=30000):
+    '''Runs mountain sort on all electrodes in `mda_file_info`
+
+    Parameters
+    ----------
+    animal : str
+    date : str
+    electrode_number : int
+    input_path : str
+    output_path : str
+    metrics_input : str, optional
+    metrics_output : str, optional
+    firing_rate_thresh : float, optional
+    isolation_thresh : float, optional
+    noise_overlap_thresh : float, optional
+    peak_snr_thresh : float, optional
+    extract_marks : bool, optional
+    extract_clips : bool, optional
+    clip_size : float, optional
+         The size of extract clips around each spike in samples.
+    freq_min : float, optional
+        The highpass or low cutoff of the filter in Hz.
+    freq_max : float, optional
+        The lowpass or high cutoff of the filter in Hz.
+    adjacency_radius : float, optional
+        The radius in µm that defines a neighborhood of channels on which to
+        sort (default -1 to ignore and not require a geom.csv file, useful for
+        tetrodes).
+    detect_threshold : float, optional
+        Spike detection threshold in standard deviations.
+    detect_sign : int, optional
+         The direction of spike to detect (-1 for negative, 1 for positive,
+         0 for both). -1 is recommended for most recordings.
+    sampling_rate : int, optional
+        Number of samples per second.
+
+    '''
     date = str(date)
 
     # Setup log file

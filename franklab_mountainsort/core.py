@@ -141,14 +141,17 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     os.makedirs(log_directory, exist_ok=True)
     log_file = os.path.join(
         log_directory, f'{animal}_{date}_nt{electrode_number}.log')
-    logger = logging.getLogger(__name__)
+
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(message)s',
+                        datefmt='%d-%b-%y %H:%M:%S',
+                        filename=log_file,
+                        filemode='w')
+
     # create a file handler
-    handler = logging.FileHandler(log_file)
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter(fmt='%(asctime)s %(message)s',
-                                  datefmt='%d-%b-%y %H:%M:%S')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    logging.getLogger('').addHandler(console)
 
     logging.info(
         f'Processing animal: {animal}, date: {date}, '

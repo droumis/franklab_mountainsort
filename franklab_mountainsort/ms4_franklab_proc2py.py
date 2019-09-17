@@ -21,8 +21,8 @@ import glob
 import json
 import os
 
-from mountainlab_pytools import mlproc as mlp
 from mountainlab_pytools import mdaio
+from mountainlab_pytools import mlproc as mlp
 
 
 def read_dataset_params(dataset_dir):

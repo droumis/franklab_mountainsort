@@ -20,21 +20,13 @@ import os
 import subprocess
 from logging import getLogger
 
+from franklab_mountainsort.ms4_franklab_proc2py import (
+    bandpass_filter, clear_seg_files, compute_cluster_metrics,
+    get_epoch_offsets, get_mda_list, mask_out_artifacts, ms4alg,
+    pyms_extract_clips, pyms_extract_segment, read_dataset_params,
+    tagged_curation, whiten)
 from franklab_msdrift.p_anneal_segments import \
     anneal_segments as pyms_anneal_segs
-
-from franklab_mountainsort.ms4_franklab_proc2py import (bandpass_filter,
-                                                        clear_seg_files,
-                                                        compute_cluster_metrics,
-                                                        get_epoch_offsets,
-                                                        get_mda_list,
-                                                        mask_out_artifacts,
-                                                        ms4alg,
-                                                        pyms_extract_clips,
-                                                        pyms_extract_segment,
-                                                        read_dataset_params,
-                                                        tagged_curation,
-                                                        whiten)
 from franklab_mstaggedcuration.p_add_curation_tags import \
     add_curation_tags as pyms_add_curation_tags
 from franklab_mstaggedcuration.p_merge_burst_parents import \

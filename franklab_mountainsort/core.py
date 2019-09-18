@@ -4,6 +4,7 @@ import logging
 import os
 import subprocess
 
+import dask
 import pandas as pd
 
 import franklab_mountainsort.ms4_franklab_pyplines as pyp
@@ -79,16 +80,21 @@ def spike_sort_all(mda_file_info, input_path, output_path,
     '''
     electrodes = mda_file_info.groupby(
         ['animal', 'date', 'electrode_number'])
+    results = []
     for (animal, date, electrode_number), electrodes_df in electrodes:
-        spike_sort_electrode(animal, date, electrode_number, input_path,
-                             output_path, metrics_input, metrics_output,
-                             firing_rate_thresh, isolation_thresh,
-                             noise_overlap_thresh, peak_snr_thresh,
-                             extract_marks, extract_clips, clip_size, freq_min,
-                             freq_max, adjacency_radius, detect_threshold,
-                             detect_sign, sampling_rate)
+        results.append(
+            spike_sort_electrode(
+                animal, date, electrode_number, input_path,
+                output_path, metrics_input, metrics_output,
+                firing_rate_thresh, isolation_thresh,
+                noise_overlap_thresh, peak_snr_thresh,
+                extract_marks, extract_clips, clip_size, freq_min,
+                freq_max, adjacency_radius, detect_threshold,
+                detect_sign, sampling_rate))
+    dask.compute(*results)
 
 
+@dask.delayed
 def spike_sort_electrode(animal, date, electrode_number, input_path,
                          output_path, metrics_input='metrics_merged.json',
                          metrics_output='metrics_merged_tagged.json',
@@ -141,14 +147,17 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     os.makedirs(log_directory, exist_ok=True)
     log_file = os.path.join(
         log_directory, f'{animal}_{date}_nt{electrode_number}.log')
-    logger = logging.getLogger(__name__)
+
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(message)s',
+                        datefmt='%d-%b-%y %H:%M:%S',
+                        filename=log_file,
+                        filemode='w')
+
     # create a file handler
-    handler = logging.FileHandler(log_file)
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter(fmt='%(asctime)s %(message)s',
-                                  datefmt='%d-%b-%y %H:%M:%S')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    logging.getLogger('').addHandler(console)
 
     logging.info(
         f'Processing animal: {animal}, date: {date}, '

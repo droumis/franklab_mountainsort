@@ -17,4 +17,5 @@ dependencies:
 - jupyter
 - jupyterlab
 - pandas
+- dask
 - "python >= 3.6"

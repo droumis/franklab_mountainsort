@@ -4,6 +4,7 @@ import logging
 import os
 import subprocess
 
+import dask
 import pandas as pd
 
 import franklab_mountainsort.ms4_franklab_pyplines as pyp
@@ -79,16 +80,21 @@ def spike_sort_all(mda_file_info, input_path, output_path,
     '''
     electrodes = mda_file_info.groupby(
         ['animal', 'date', 'electrode_number'])
+    results = []
     for (animal, date, electrode_number), electrodes_df in electrodes:
-        spike_sort_electrode(animal, date, electrode_number, input_path,
-                             output_path, metrics_input, metrics_output,
-                             firing_rate_thresh, isolation_thresh,
-                             noise_overlap_thresh, peak_snr_thresh,
-                             extract_marks, extract_clips, clip_size, freq_min,
-                             freq_max, adjacency_radius, detect_threshold,
-                             detect_sign, sampling_rate)
+        results.append(
+            spike_sort_electrode(
+                animal, date, electrode_number, input_path,
+                output_path, metrics_input, metrics_output,
+                firing_rate_thresh, isolation_thresh,
+                noise_overlap_thresh, peak_snr_thresh,
+                extract_marks, extract_clips, clip_size, freq_min,
+                freq_max, adjacency_radius, detect_threshold,
+                detect_sign, sampling_rate))
+    dask.compute(*results)
 
 
+@dask.delayed
 def spike_sort_electrode(animal, date, electrode_number, input_path,
                          output_path, metrics_input='metrics_merged.json',
                          metrics_output='metrics_merged_tagged.json',

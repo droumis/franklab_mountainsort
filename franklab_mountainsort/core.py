@@ -103,7 +103,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
                          extract_marks=True, extract_clips=True,
                          clip_size=100, freq_min=300, freq_max=6000,
                          adjacency_radius=-1, detect_threshold=3,
-                         detect_sign=-1, sampling_rate=30000):
+                         detect_sign=-1, sampling_rate=30000, geom=None):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -138,12 +138,14 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
          0 for both). -1 is recommended for most recordings.
     sampling_rate : int, optional
         Number of samples per second.
+    geom : ndarray or None, shape (n_contacts, 2), optional
+        Geometry of the electrode. Important for probes.
 
     '''
     date = str(date)
 
     # Setup log file
-    log_directory = os.path.join(input_path, 'logs')
+    log_directory = os.path.join(output_path, 'logs')
     os.makedirs(log_directory, exist_ok=True)
     log_file = os.path.join(
         log_directory, f'{animal}_{date}_nt{electrode_number}.log')
@@ -204,6 +206,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     pyp.ms4_sort_on_segs(
         dataset_dir=mountain_mda_electrode_dir,
         output_dir=mountain_out_electrode_dir,
+        geom=geom,
         adjacency_radius=adjacency_radius,
         detect_threshold=detect_threshold,
         detect_sign=detect_sign,

@@ -150,21 +150,18 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     log_file = os.path.join(
         log_directory, f'{animal}_{date}_nt{electrode_number}.log')
 
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s %(message)s',
-                        datefmt='%d-%b-%y %H:%M:%S',
-                        filename=log_file,
-                        filemode='w')
+    logger = logging.getLogger(f'{animal}_{date}_nt{electrode_number}')
+    fhandler = logging.FileHandler(filename=log_file, mode='a')
+    formatter = logging.Formatter(fmt='%(asctime)s %(message)s',
+                                  datefmt='%d-%b-%y %H:%M:%S')
+    fhandler.setFormatter(formatter)
+    logger.addHandler(fhandler)
+    logger.setLevel(logging.DEBUG)
 
-    # create a file handler
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-    logging.getLogger('').addHandler(console)
-
-    logging.info(
+    logger.info(
         f'Processing animal: {animal}, date: {date}, '
         f'electrode: {electrode_number}')
-    logging.info(f'Parameters: {locals()}')
+    logger.info(f'Parameters: {locals()}')
 
     mountain_mda_electrode_dir = os.path.join(
         input_path, date, f'{date}_{animal}.mountain',
@@ -177,8 +174,8 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
 
     # Concatenate mda files from the same epoch
     if not os.path.isfile(raw_mda):
-        logging.info('Concatenated .mda file does not exist.'
-                     f'Creating {raw_mda}')
+        logger.info('Concatenated .mda file does not exist.'
+                    f'Creating {raw_mda}')
         os.makedirs(mountain_mda_electrode_dir, exist_ok=True)
         # create params if it doesn't exist
         params_file = os.path.join(
@@ -195,14 +192,14 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
         output_path, date, 'ms4', f'nt{electrode_number}')
     os.makedirs(mountain_out_electrode_dir, exist_ok=True)
 
-    logging.info('Preprocessing waveforms...')
+    logger.info('Preprocessing waveforms...')
     pyp.filt_mask_whiten(
         dataset_dir=mountain_mda_electrode_dir,
         output_dir=mountain_out_electrode_dir,
         freq_min=freq_min,
         freq_max=freq_max)
 
-    logging.info('Sorting spikes...')
+    logger.info('Sorting spikes...')
     pyp.ms4_sort_on_segs(
         dataset_dir=mountain_mda_electrode_dir,
         output_dir=mountain_out_electrode_dir,
@@ -212,12 +209,12 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
         detect_sign=detect_sign,
         mda_opts=mda_opts)
 
-    logging.info('Merging burst parents...')
+    logger.info('Merging burst parents...')
     pyp.merge_burst_parents(
         dataset_dir=mountain_mda_electrode_dir,
         output_dir=mountain_out_electrode_dir)
 
-    logging.info('Adding curation tags...')
+    logger.info('Adding curation tags...')
     pyp.add_curation_tags(
         dataset_dir=mountain_out_electrode_dir,
         output_dir=mountain_out_electrode_dir,
@@ -229,16 +226,16 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
         peak_snr_thresh=peak_snr_thresh)
 
     if extract_marks:
-        logging.info('Extracting marks...')
+        logger.info('Extracting marks...')
         pyp.extract_marks(dataset_dir=mountain_out_electrode_dir,
                           output_dir=mountain_out_electrode_dir)
 
     if extract_clips:
-        logging.info('Extracting clips...')
+        logger.info('Extracting clips...')
         pyp.extract_clips(dataset_dir=mountain_out_electrode_dir,
                           output_dir=mountain_out_electrode_dir,
                           clip_size=clip_size)
-    logging.info('Done')
+    logger.info('Done')
 
 
 def get_mda_files_dataframe(data_path, recursive=False):

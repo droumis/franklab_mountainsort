@@ -143,10 +143,10 @@ def filt_mask_whiten(dataset_dir, output_dir, freq_min=300, freq_max=6000,
     )
 
 
-# full = sort the entire file as one mda
 def ms4_sort_full(dataset_dir, output_dir, geom=None, adjacency_radius=-1,
                   detect_threshold=3, detect_sign=False, opts=None):
-    '''
+    '''Sort the entire file as one mda
+
     Parameters
     ----------
     dataset_dir : str

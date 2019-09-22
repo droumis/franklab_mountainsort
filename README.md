@@ -29,3 +29,10 @@ import franklab_mountainsort
 1. Define input data directory, output data, temp directory
 2. Create a DataFrame with .mda file information (`get_mda_files_dataframe`)
 3. Run spike sorting on all or a subset of the DataFrame (`spike_sort_all`)
+4. Open qt-mountainview (make sure you've activated the conda environment. If not type `conda activate franklab_mountainsort` into the terminal.)
+```
+qt-mountainview --pre=pre.mda.prv --firings=firings_raw.mda --samplerate=30000 --cluster_metrics=metrics_raw.json
+```
+
++ raw.mda is in the `<animal>/preprocessing/<date>/<date>_<animal>.mountain`  folder
++ need to categorize all the files and where they are

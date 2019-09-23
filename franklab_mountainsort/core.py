@@ -6,6 +6,7 @@ import subprocess
 
 import dask
 import pandas as pd
+import numpy as np
 
 import franklab_mountainsort.ms4_franklab_pyplines as pyp
 
@@ -42,7 +43,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
                    extract_marks=True, extract_clips=True,
                    clip_size=100, freq_min=300, freq_max=6000,
                    adjacency_radius=-1, detect_threshold=3, detect_sign=-1,
-                   sampling_rate=30000, geom=None):
+                   sampling_rate=30000):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -76,8 +77,6 @@ def spike_sort_all(mda_file_info, input_path, output_path,
          0 for both). -1 is recommended for most recordings.
     sampling_rate : int, optional
         Number of samples per second.
-    geom : ndarray or None, shape (n_contacts, 2), optional
-        Geometry of the electrode. Important for probes.
 
     '''
     electrodes = mda_file_info.groupby(
@@ -92,6 +91,10 @@ def spike_sort_all(mda_file_info, input_path, output_path,
 
     results = []
     for (animal, date, electrode_number), electrodes_df in electrodes:
+        try:
+            geom_file = electrodes_df.geom_absolute_filepath.unique()[0]
+        except AttributeError:
+            geom_file = electrodes_df.geom_absolute_filepath
         results.append(
             spike_sort_electrode(
                 animal, date, electrode_number, input_path,
@@ -100,7 +103,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
                 noise_overlap_thresh, peak_snr_thresh,
                 extract_marks, extract_clips, clip_size, freq_min,
                 freq_max, adjacency_radius, detect_threshold,
-                detect_sign, sampling_rate, geom=geom))
+                detect_sign, sampling_rate, geom=geom_file))
     dask.compute(*results)
 
 
@@ -276,16 +279,20 @@ def get_mda_files_dataframe(data_path, recursive=False):
 
     mda_files = glob.glob(os.path.join(data_path, '*', '*.mda', '*.*.mda'),
                           recursive=recursive)
-    file_info = [_get_file_information(mda_file) for mda_file in mda_files
-                 if _get_file_information(mda_file) is not None]
+    file_info = [_get_mda_file_information(mda_file) for mda_file in mda_files
+                 if _get_mda_file_information(mda_file) is not None]
     COLUMNS = ['animal', 'date', 'epoch', 'electrode_number', 'task',
                'relative_filepath']
-    return (pd.DataFrame(file_info, columns=COLUMNS)
-            .set_index(['animal', 'date', 'epoch', 'electrode_number'])
-            .sort_index())
+    mda_df = (pd.DataFrame(file_info, columns=COLUMNS)
+              .set_index(['animal', 'date', 'epoch', 'electrode_number'])
+              .sort_index())
+
+    geom_df = get_geom_files_dataframe(data_path, recursive=recursive)
+
+    return mda_df.join(geom_df).replace(dict(geom_absolute_filepath={np.nan: None}))
 
 
-def _get_file_information(mda_file):
+def _get_mda_file_information(mda_file):
     try:
         date, animal, epoch, other = os.path.basename(mda_file).split('_')
         date, epoch = int(date), int(epoch)
@@ -295,5 +302,43 @@ def _get_file_information(mda_file):
             animal, 'preprocessing', str(date), os.path.basename(mda_file))
 
         return animal, date, epoch, electrode_number, task, relative_filepath
+    except ValueError:
+        pass
+
+
+def get_geom_files_dataframe(data_path, recursive=False):
+    '''
+
+    Parameters
+    ----------
+    data_path : str
+    recursive : bool, optional
+        Recursive search using glob.
+
+    Returns
+    -------
+    geom_files_dataframe : pandas.DataFrame
+
+    '''
+
+    geom_files = glob.glob(os.path.join(data_path, '*', '*', '*', 'geom.csv'),
+                          recursive=recursive)
+    file_info = [_get_geom_file_information(geom_file)
+                 for geom_file in geom_files]
+    COLUMNS = ['animal', 'date', 'electrode_number',
+               'geom_absolute_filepath']
+    return (pd.DataFrame(file_info, columns=COLUMNS)
+            .set_index(['animal', 'date', 'electrode_number'])
+            .sort_index())
+
+
+def _get_geom_file_information(geom_file):
+    try:
+        *_, animal, _, date, _, electrode_number, _ = geom_file.split('/')
+        electrode_number = int(electrode_number.strip('nt'))
+        date = int(date)
+        relative_filepath = os.path.abspath(geom_file)
+
+        return animal, date, electrode_number, relative_filepath
     except ValueError:
         pass

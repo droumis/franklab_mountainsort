@@ -42,7 +42,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
                    extract_marks=True, extract_clips=True,
                    clip_size=100, freq_min=300, freq_max=6000,
                    adjacency_radius=-1, detect_threshold=3, detect_sign=-1,
-                   sampling_rate=30000):
+                   sampling_rate=30000, geom=None):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -76,6 +76,8 @@ def spike_sort_all(mda_file_info, input_path, output_path,
          0 for both). -1 is recommended for most recordings.
     sampling_rate : int, optional
         Number of samples per second.
+    geom : ndarray or None, shape (n_contacts, 2), optional
+        Geometry of the electrode. Important for probes.
 
     '''
     electrodes = mda_file_info.groupby(
@@ -98,7 +100,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
                 noise_overlap_thresh, peak_snr_thresh,
                 extract_marks, extract_clips, clip_size, freq_min,
                 freq_max, adjacency_radius, detect_threshold,
-                detect_sign, sampling_rate))
+                detect_sign, sampling_rate, geom=geom))
     dask.compute(*results)
 
 

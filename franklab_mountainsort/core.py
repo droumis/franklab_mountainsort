@@ -5,10 +5,9 @@ import os
 import subprocess
 
 import dask
-import pandas as pd
-import numpy as np
-
 import franklab_mountainsort.ms4_franklab_pyplines as pyp
+import numpy as np
+import pandas as pd
 
 
 def move_mda_data(source_animal_path, target_animal_path, animal, dates):
@@ -209,14 +208,16 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
         output_path, date, 'ms4', f'nt{electrode_number}')
     os.makedirs(mountain_out_electrode_dir, exist_ok=True)
 
-    logger.info('Preprocessing waveforms...')
+    logger.info(
+        f'{animal} {date} nt{electrode_number} preprocessing waveforms...')
     pyp.filt_mask_whiten(
         dataset_dir=mountain_mda_electrode_dir,
         output_dir=mountain_out_electrode_dir,
         freq_min=freq_min,
         freq_max=freq_max)
 
-    logger.info('Sorting spikes...')
+    logger.info(
+        f'{animal} {date} nt{electrode_number} sorting spikes...')
     pyp.ms4_sort_on_segs(
         dataset_dir=mountain_mda_electrode_dir,
         output_dir=mountain_out_electrode_dir,
@@ -226,12 +227,14 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
         detect_sign=detect_sign,
         mda_opts=mda_opts)
 
-    logger.info('Merging burst parents...')
+    logger.info(
+        f'{animal} {date} nt{electrode_number} merging burst parents...')
     pyp.merge_burst_parents(
         dataset_dir=mountain_mda_electrode_dir,
         output_dir=mountain_out_electrode_dir)
 
-    logger.info('Adding curation tags...')
+    logger.info(
+        f'{animal} {date} nt{electrode_number} adding curation tags...')
     pyp.add_curation_tags(
         dataset_dir=mountain_out_electrode_dir,
         output_dir=mountain_out_electrode_dir,
@@ -243,16 +246,18 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
         peak_snr_thresh=peak_snr_thresh)
 
     if extract_marks:
-        logger.info('Extracting marks...')
+        logger.info(
+            f'{animal} {date} nt{electrode_number} extracting marks...')
         pyp.extract_marks(dataset_dir=mountain_out_electrode_dir,
                           output_dir=mountain_out_electrode_dir)
 
     if extract_clips:
-        logger.info('Extracting clips...')
+        logger.info(
+            f'{animal} {date} nt{electrode_number} extracting clips...')
         pyp.extract_clips(dataset_dir=mountain_out_electrode_dir,
                           output_dir=mountain_out_electrode_dir,
                           clip_size=clip_size)
-    logger.info('Done')
+    logger.info(f'{animal} {date} nt{electrode_number} done...')
 
 
 def get_mda_files_dataframe(data_path, recursive=False):
@@ -326,7 +331,7 @@ def get_geom_files_dataframe(data_path, recursive=False):
     '''
 
     geom_files = glob.glob(os.path.join(data_path, '*', '*', '*', 'geom.csv'),
-                          recursive=recursive)
+                           recursive=recursive)
     file_info = [_get_geom_file_information(geom_file)
                  for geom_file in geom_files]
     COLUMNS = ['animal', 'date', 'electrode_number',

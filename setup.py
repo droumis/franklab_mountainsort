@@ -11,7 +11,7 @@ setup(
     description=(''),
     author='',
     author_email='',
-    url='',
+    url='https://github.com/LorenFrankLab/franklab_mountainsort',
     packages=find_packages(),
     install_requires=INSTALL_REQUIRES,
     tests_require=TESTS_REQUIRE,

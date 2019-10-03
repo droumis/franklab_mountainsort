@@ -41,7 +41,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
                    firing_rate_thresh=0.01, isolation_thresh=0.95,
                    noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                    extract_marks=True, extract_clips=True,
-                   clip_size=100, freq_min=300, freq_max=6000,
+                   clip_size=45, freq_min=300, freq_max=6000,
                    adjacency_radius=-1, detect_threshold=3, detect_sign=-1,
                    sampling_rate=30000):
     '''Runs mountain sort on all electrodes in `mda_file_info`
@@ -61,7 +61,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
     extract_marks : bool, optional
     extract_clips : bool, optional
     clip_size : float, optional
-         The size of extract clips around each spike in samples.
+         Number of samples around each spike. Clips are the
     freq_min : float, optional
         The highpass or low cutoff of the filter in Hz.
     freq_max : float, optional
@@ -118,7 +118,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
                          firing_rate_thresh=0.01, isolation_thresh=0.95,
                          noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                          extract_marks=True, extract_clips=True,
-                         clip_size=100, freq_min=300, freq_max=6000,
+                         clip_size=45, freq_min=300, freq_max=6000,
                          adjacency_radius=-1, detect_threshold=3,
                          detect_sign=-1, sampling_rate=30000, geom=None):
     '''Runs mountain sort on all electrodes in `mda_file_info`

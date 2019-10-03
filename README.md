@@ -36,7 +36,7 @@ qt-mountainview --pre=pre.mda.prv --firings=firings_raw.mda --samplerate=30000 -
 
 
 ### Inputs to MountainSort
-+ `raw.mda.prv`: The concatenated time series for one day of recording. It is located in the `<animal>/preprocessing/<date>/<date>_<animal>.mountain` folder
++ `*.mda`: time series for each recording.
 + `params.json`: contains information about the parameters to use for the sort. These can be overwritten by specifying them in the call to run the sort (in the batch script)
 + `geom.csv` (optional): contains information about the location of contacts for that ntrode; used in concert with adjacency_radius to determine the neighborhoods to sort on. In the case of tetrodes, this is not necessary because all the contacts of a tetrode should be sorted together as a single neighborhood. This can be specified by not providing a geom.csv, setting adjacency_radius to -1, or both.
 
@@ -49,6 +49,7 @@ They can be used interchangeably when using `qt-mountainview`.
 
 ### Outputs from MountainSort
 For each electrode:
++ `raw.mda.prv`: The concatenated time series for one day of recording. It is located in the `<animal>/preprocessing/<date>/<date>_<animal>.mountain` folder
 + `clips.mda`: The waveforms around the spike times.
 + `filt.mda.prv`: The time series after it has been bandpass filtered.
 + `firings_burst_merged.mda`: The firings file after burst merge processing.

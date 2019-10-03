@@ -29,6 +29,13 @@ import franklab_mountainsort
 1. Define input data directory, output data, temp directory
 2. Create a pandas dataframe with `.mda` file information (using function `get_mda_files_dataframe`)
 3. Run spike sorting on all or a subset of the DataFrame (using function `spike_sort_all`)
+   - This will concatenate all epochs in a day
+   - Bandpass filter and whiten the data
+   - Run the isosplit clustering algorithm
+   - Merge clusters that look like they are from one cell that is bursting.
+   - Add curation metrics and tags (statistics about each cluster and whether it is multiunit or not.).
+   - Extract clip waveforms (optional)
+   - Extract marks (optional)
 4. Open qt-mountainview (make sure you've activated the conda environment. If not type `conda activate franklab_mountainsort` into the terminal.)
 ```
 qt-mountainview --pre=pre.mda.prv --firings=firings_raw.mda --samplerate=30000 --cluster_metrics=metrics_raw.json

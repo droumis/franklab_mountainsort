@@ -3,7 +3,7 @@ channels:
 - conda-forge
 - flatiron
 - defaults
-- edeno
+- franklab
 dependencies:
 - mountainlab
 - mountainlab_pytools

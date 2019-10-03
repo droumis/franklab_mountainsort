@@ -38,7 +38,7 @@ qt-mountainview --pre=pre.mda.prv --firings=firings_raw.mda --samplerate=30000 -
 + need to categorize all the files and where they are
 
 ### Inputs to MountainSort
-+ `raw.mda.prv`: points to each epoch’s worth of data for that ntrode
++ `raw.mda.prv`: The concatenated time series for one day of recording.
 + `params.json`: contains information about the parameters to use for the sort. These can be overwritten by specifying them in the call to run the sort (in the batch script)
 + `geom.csv` (optional): contains information about the location of contacts for that ntrode; used in concert with adjacency_radius to determine the neighborhoods to sort on. In the case of tetrodes, this is not necessary because all the contacts of a tetrode should be sorted together as a single neighborhood. This can be specified by not providing a geom.csv, setting adjacency_radius to -1, or both.
 

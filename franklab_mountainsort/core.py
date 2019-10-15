@@ -5,9 +5,10 @@ import os
 import subprocess
 
 import dask
-import franklab_mountainsort.ms4_franklab_pyplines as pyp
 import numpy as np
 import pandas as pd
+
+import franklab_mountainsort.ms4_franklab_pyplines as pyp
 
 
 def move_mda_data(source_animal_path, target_animal_path, animal, dates):
@@ -40,7 +41,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
                    firing_rate_thresh=0.01, isolation_thresh=0.95,
                    noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                    extract_marks=True, extract_clips=True,
-                   clip_size=100, freq_min=300, freq_max=6000,
+                   clip_size=45, freq_min=300, freq_max=6000,
                    adjacency_radius=-1, detect_threshold=3, detect_sign=-1,
                    sampling_rate=30000):
     '''Runs mountain sort on all electrodes in `mda_file_info`
@@ -60,7 +61,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
     extract_marks : bool, optional
     extract_clips : bool, optional
     clip_size : float, optional
-         The size of extract clips around each spike in samples.
+         Number of samples around each spike. Clips are the
     freq_min : float, optional
         The highpass or low cutoff of the filter in Hz.
     freq_max : float, optional
@@ -117,7 +118,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
                          firing_rate_thresh=0.01, isolation_thresh=0.95,
                          noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                          extract_marks=True, extract_clips=True,
-                         clip_size=100, freq_min=300, freq_max=6000,
+                         clip_size=45, freq_min=300, freq_max=6000,
                          adjacency_radius=-1, detect_threshold=3,
                          detect_sign=-1, sampling_rate=30000, geom=None):
     '''Runs mountain sort on all electrodes in `mda_file_info`
@@ -163,16 +164,8 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     # Setup log file
     log_directory = os.path.join(output_path, 'logs')
     os.makedirs(log_directory, exist_ok=True)
-    log_file = os.path.join(
-        log_directory, f'{animal}_{date}_nt{electrode_number}.log')
 
-    logger = logging.getLogger(f'{animal}_{date}_nt{electrode_number}')
-    file_handler = logging.FileHandler(filename=log_file, mode='a')
-    formatter = logging.Formatter(fmt='%(asctime)s %(message)s',
-                                  datefmt='%d-%b-%y %H:%M:%S')
-    file_handler.setFormatter(formatter)
-    file_handler.setLevel(logging.WARNING)
-    logger.addHandler(file_handler)
+    logger = create_file_logger(animal, date, electrode_number, log_directory)
 
     logger.info(
         f'Processing animal: {animal}, date: {date}, '
@@ -351,3 +344,20 @@ def _get_geom_file_information(geom_file):
         return animal, date, electrode_number, relative_filepath
     except ValueError:
         pass
+
+
+def create_file_logger(animal, date, electrode_number, log_directory,
+                       level=logging.DEBUG):
+    log_file = os.path.join(
+        log_directory, f'{animal}_{date}_nt{electrode_number}.log')
+    logger = logging.getLogger(f'{animal}_{date}_nt{electrode_number}')
+    logger.setLevel(level)
+    format_string = '%(asctime)s — %(name)s — %(message)s'
+    log_format = logging.Formatter(format_string, datefmt='%d-%b-%y %H:%M:%S')
+
+    # Creating and adding the file handler
+    file_handler = logging.FileHandler(log_file, mode='a')
+    file_handler.setFormatter(log_format)
+    logger.addHandler(file_handler)
+
+    return logger

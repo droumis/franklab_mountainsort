@@ -407,7 +407,7 @@ def recalc_metrics(dataset_dir, output_dir, firings_in='',
     )
 
 
-def extract_clips(dataset_dir, output_dir, clip_size=100, opts=None):
+def extract_clips(dataset_dir, output_dir, clip_size=45, opts=None):
     '''
 
     Parameters

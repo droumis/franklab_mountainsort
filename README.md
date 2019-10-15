@@ -6,7 +6,7 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
 
 2. Clone git repository
 ```bash
-git clone https://github.com/edeno/franklab_mountainsort.git
+git clone https://github.com/LorenFrankLab/franklab_mountainsort.git
 ```
 3. Create conda environment
 ```bash

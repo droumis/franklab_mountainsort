@@ -273,6 +273,7 @@ def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
     str_sample_offsets = ','.join(map(str, sample_offsets))
     logger.info(str_sample_offsets)
 
+    # Drift tracking
     pyms_anneal_segs(
         timeseries_list=timeseries_list,
         firings_list=firings_list,

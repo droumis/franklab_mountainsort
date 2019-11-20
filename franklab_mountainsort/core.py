@@ -230,8 +230,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
             geom=None,
             adjacency_radius=adjacency_radius,
             detect_threshold=detect_threshold,
-            detect_sign=detect_sign,
-            opts=mda_opts)
+            detect_sign=detect_sign)
 
     logger.info(
         f'{animal} {date} nt{electrode_number} merging burst parents...')

@@ -298,7 +298,9 @@ def get_mda_files_dataframe(data_path, recursive=False):
 
     geom_df = get_geom_files_dataframe(data_path, recursive=recursive)
 
-    return mda_df.join(geom_df).replace(dict(geom_absolute_filepath={np.nan: None}))
+    return (mda_df
+            .join(geom_df)
+            .replace(dict(geom_absolute_filepath={np.nan: None})))
 
 
 def _get_mda_file_information(mda_file):

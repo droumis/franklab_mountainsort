@@ -38,7 +38,7 @@ def move_mda_data(source_animal_path, target_animal_path, animal, dates):
 def spike_sort_all(mda_file_info, input_path, output_path,
                    metrics_input='metrics_merged.json',
                    metrics_output='metrics_merged_tagged.json',
-                   firing_rate_thresh=0.01, isolation_thresh=0.95,
+                   firing_rate_thresh=0.01, isolation_thresh=0.97,
                    noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                    extract_marks=True, extract_clips=True,
                    clip_size=45, freq_min=300, freq_max=6000,

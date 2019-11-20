@@ -55,13 +55,16 @@ def spike_sort_all(mda_file_info, input_path, output_path,
     metrics_input : str, optional
     metrics_output : str, optional
     firing_rate_thresh : float, optional
+        Clusters less than the firing rate threshold is excluded (spikes / s )
     isolation_thresh : float, optional
+        Distance to a cluster of noise.
     noise_overlap_thresh : float, optional
     peak_snr_thresh : float, optional
     extract_marks : bool, optional
     extract_clips : bool, optional
+        Extract the spike waveform around a spike.
     clip_size : float, optional
-         Number of samples around each spike. Clips are the
+         Number of samples around each spike.
     freq_min : float, optional
         The highpass or low cutoff of the filter in Hz.
     freq_max : float, optional

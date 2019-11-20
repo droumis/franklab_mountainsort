@@ -83,7 +83,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
     '''
     electrodes = mda_file_info.groupby(
         ['animal', 'date', 'electrode_number'])
-    logging.info(f'Processing {len(electrodes)} electrode...')
+    logging.info(f'Processing {len(electrodes)} electrodes...')
     logging.info(f'Input path: {input_path}')
     logging.info(f'Output path: {output_path}')
     temp_dir = os.getenv('ML_TEMPORARY_DIRECTORY')

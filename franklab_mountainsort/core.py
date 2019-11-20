@@ -100,14 +100,15 @@ def spike_sort_all(mda_file_info, input_path, output_path,
             geom_file = electrodes_df.geom_absolute_filepath.unique()[0]
         except AttributeError:
             geom_file = electrodes_df.geom_absolute_filepath
-            spike_sort_electrode(
-                animal, date, electrode_number, input_path,
-                output_path, metrics_input, metrics_output,
-                firing_rate_thresh, isolation_thresh,
-                noise_overlap_thresh, peak_snr_thresh,
-                extract_marks, extract_clips, clip_size, freq_min,
-                freq_max, adjacency_radius, detect_threshold,
-                detect_sign, sampling_rate, geom=geom_file)
+
+        spike_sort_electrode(
+            animal, date, electrode_number, input_path,
+            output_path, metrics_input, metrics_output,
+            firing_rate_thresh, isolation_thresh,
+            noise_overlap_thresh, peak_snr_thresh,
+            extract_marks, extract_clips, clip_size, freq_min,
+            freq_max, adjacency_radius, detect_threshold,
+            detect_sign, sampling_rate, geom=geom_file)
 
 
 def spike_sort_electrode(animal, date, electrode_number, input_path,

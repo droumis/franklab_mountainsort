@@ -9,6 +9,9 @@ import pandas as pd
 
 import franklab_mountainsort.ms4_franklab_pyplines as pyp
 
+METRICS_INPUT = 'metrics_merged.json',
+METRICS_OUTPUT = 'metrics_merged_tagged.json',
+
 
 def move_mda_data(source_animal_path, target_animal_path, animal, dates):
     '''Move data from preprocessing to scratch.
@@ -35,8 +38,6 @@ def move_mda_data(source_animal_path, target_animal_path, animal, dates):
 
 
 def spike_sort_all(mda_file_info, input_path, output_path,
-                   metrics_input='metrics_merged.json',
-                   metrics_output='metrics_merged_tagged.json',
                    firing_rate_thresh=0.01, isolation_thresh=0.97,
                    noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                    extract_marks=True, extract_clips=True,
@@ -51,8 +52,6 @@ def spike_sort_all(mda_file_info, input_path, output_path,
         Dataframe generated using function `get_mda_files_dataframe`
     input_path : str
     output_path : str
-    metrics_input : str, optional
-    metrics_output : str, optional
     firing_rate_thresh : float, optional
         Clusters less than the firing rate threshold is excluded (spikes / s )
     isolation_thresh : float, optional
@@ -104,8 +103,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
 
         spike_sort_electrode(
             animal, date, electrode_number, input_path,
-            output_path, metrics_input, metrics_output,
-            firing_rate_thresh, isolation_thresh,
+            output_path, firing_rate_thresh, isolation_thresh,
             noise_overlap_thresh, peak_snr_thresh,
             extract_marks, extract_clips, clip_size, freq_min,
             freq_max, adjacency_radius, detect_threshold,
@@ -114,9 +112,8 @@ def spike_sort_all(mda_file_info, input_path, output_path,
 
 
 def spike_sort_electrode(animal, date, electrode_number, input_path,
-                         output_path, metrics_input='metrics_merged.json',
-                         metrics_output='metrics_merged_tagged.json',
-                         firing_rate_thresh=0.01, isolation_thresh=0.97,
+                         output_path, firing_rate_thresh=0.01,
+                         isolation_thresh=0.97,
                          noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                          extract_marks=True, extract_clips=True,
                          clip_size=45, freq_min=300, freq_max=6000,
@@ -132,8 +129,6 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     electrode_number : int
     input_path : str
     output_path : str
-    metrics_input : str, optional
-    metrics_output : str, optional
     firing_rate_thresh : float, optional
     isolation_thresh : float, optional
     noise_overlap_thresh : float, optional
@@ -243,8 +238,8 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     pyp.add_curation_tags(
         dataset_dir=mountain_out_electrode_dir,
         output_dir=mountain_out_electrode_dir,
-        metrics_input=metrics_input,
-        metrics_output=metrics_output,
+        metrics_input=METRICS_INPUT,
+        metrics_output=METRICS_OUTPUT,
         firing_rate_thresh=firing_rate_thresh,
         isolation_thresh=isolation_thresh,
         noise_overlap_thresh=noise_overlap_thresh,

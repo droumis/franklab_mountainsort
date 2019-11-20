@@ -4,7 +4,6 @@ import logging
 import os
 import subprocess
 
-import dask
 import numpy as np
 import pandas as pd
 
@@ -96,13 +95,11 @@ def spike_sort_all(mda_file_info, input_path, output_path,
         logging.warn('No electrodes for sorting found. Check to see if your '
                      'input path is correctly pointing to the .mda files.')
 
-    results = []
     for (animal, date, electrode_number), electrodes_df in electrodes:
         try:
             geom_file = electrodes_df.geom_absolute_filepath.unique()[0]
         except AttributeError:
             geom_file = electrodes_df.geom_absolute_filepath
-        results.append(
             spike_sort_electrode(
                 animal, date, electrode_number, input_path,
                 output_path, metrics_input, metrics_output,
@@ -110,11 +107,9 @@ def spike_sort_all(mda_file_info, input_path, output_path,
                 noise_overlap_thresh, peak_snr_thresh,
                 extract_marks, extract_clips, clip_size, freq_min,
                 freq_max, adjacency_radius, detect_threshold,
-                detect_sign, sampling_rate, geom=geom_file))
-    dask.compute(*results)
+                detect_sign, sampling_rate, geom=geom_file)
 
 
-@dask.delayed
 def spike_sort_electrode(animal, date, electrode_number, input_path,
                          output_path, metrics_input='metrics_merged.json',
                          metrics_output='metrics_merged_tagged.json',

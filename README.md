@@ -8,19 +8,23 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
 ```bash
 git clone https://github.com/LorenFrankLab/franklab_mountainsort.git
 ```
-3. Create conda environment
+3. Go into the franklab_mountainsort folder
+```bash
+cd franklab_mountainsort
+```
+4. Create conda environment
 ```bash
 conda env create -f environment.yml
 ```
-4. activate conda environment
+5. activate conda environment
 ```bash
 conda activate franklab_mountainsort
 ```
-5. Install package code
+6. Install package code
 ```bash
 python setup.py install
 ```
-6. Check if everything installed correctly. Open jupyter notebook, jupyter lab, or python console. Try to import franklab_mountainsort.
+7. Check if everything installed correctly. Open jupyter notebook, jupyter lab, or python console. Try to import franklab_mountainsort.
 ```python
 import franklab_mountainsort
 ```

@@ -18,6 +18,9 @@ dependencies:
 - jupyterlab
 - pandas
 - dask
+- pytest-cov
+- coveralls
+- setuptools
 - "python >= 3.6"
 - pip
 - pip:

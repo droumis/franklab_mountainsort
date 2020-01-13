@@ -19,3 +19,6 @@ dependencies:
 - pandas
 - dask
 - "python >= 3.6"
+- pip
+- pip:
+  - nb-black

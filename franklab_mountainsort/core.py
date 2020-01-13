@@ -4,11 +4,13 @@ import logging
 import os
 import subprocess
 
-import dask
 import numpy as np
 import pandas as pd
 
 import franklab_mountainsort.ms4_franklab_pyplines as pyp
+
+METRICS_INPUT = 'metrics_merged.json',
+METRICS_OUTPUT = 'metrics_merged_tagged.json',
 
 
 def move_mda_data(source_animal_path, target_animal_path, animal, dates):
@@ -36,14 +38,12 @@ def move_mda_data(source_animal_path, target_animal_path, animal, dates):
 
 
 def spike_sort_all(mda_file_info, input_path, output_path,
-                   metrics_input='metrics_merged.json',
-                   metrics_output='metrics_merged_tagged.json',
-                   firing_rate_thresh=0.01, isolation_thresh=0.95,
+                   firing_rate_thresh=0.01, isolation_thresh=0.97,
                    noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                    extract_marks=True, extract_clips=True,
                    clip_size=45, freq_min=300, freq_max=6000,
                    adjacency_radius=-1, detect_threshold=3, detect_sign=-1,
-                   sampling_rate=30000):
+                   sampling_rate=30000, is_drift_track=True):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -52,16 +52,17 @@ def spike_sort_all(mda_file_info, input_path, output_path,
         Dataframe generated using function `get_mda_files_dataframe`
     input_path : str
     output_path : str
-    metrics_input : str, optional
-    metrics_output : str, optional
     firing_rate_thresh : float, optional
+        Clusters less than the firing rate threshold is excluded (spikes / s )
     isolation_thresh : float, optional
+        Distance to a cluster of noise.
     noise_overlap_thresh : float, optional
     peak_snr_thresh : float, optional
     extract_marks : bool, optional
     extract_clips : bool, optional
+        Extract the spike waveform around a spike.
     clip_size : float, optional
-         Number of samples around each spike. Clips are the
+         Number of samples around each spike.
     freq_min : float, optional
         The highpass or low cutoff of the filter in Hz.
     freq_max : float, optional
@@ -77,11 +78,12 @@ def spike_sort_all(mda_file_info, input_path, output_path,
          0 for both). -1 is recommended for most recordings.
     sampling_rate : int, optional
         Number of samples per second.
-
+    is_drift_track : bool, optional
+        Use drift tracking.
     '''
     electrodes = mda_file_info.groupby(
         ['animal', 'date', 'electrode_number'])
-    logging.info(f'Processing {len(electrodes)} electrode...')
+    logging.info(f'Processing {len(electrodes)} electrodes...')
     logging.info(f'Input path: {input_path}')
     logging.info(f'Output path: {output_path}')
     temp_dir = os.getenv('ML_TEMPORARY_DIRECTORY')
@@ -93,34 +95,31 @@ def spike_sort_all(mda_file_info, input_path, output_path,
         logging.warn('No electrodes for sorting found. Check to see if your '
                      'input path is correctly pointing to the .mda files.')
 
-    results = []
     for (animal, date, electrode_number), electrodes_df in electrodes:
         try:
             geom_file = electrodes_df.geom_absolute_filepath.unique()[0]
         except AttributeError:
             geom_file = electrodes_df.geom_absolute_filepath
-        results.append(
-            spike_sort_electrode(
-                animal, date, electrode_number, input_path,
-                output_path, metrics_input, metrics_output,
-                firing_rate_thresh, isolation_thresh,
-                noise_overlap_thresh, peak_snr_thresh,
-                extract_marks, extract_clips, clip_size, freq_min,
-                freq_max, adjacency_radius, detect_threshold,
-                detect_sign, sampling_rate, geom=geom_file))
-    dask.compute(*results)
+
+        spike_sort_electrode(
+            animal, date, electrode_number, input_path,
+            output_path, firing_rate_thresh, isolation_thresh,
+            noise_overlap_thresh, peak_snr_thresh,
+            extract_marks, extract_clips, clip_size, freq_min,
+            freq_max, adjacency_radius, detect_threshold,
+            detect_sign, sampling_rate, geom=geom_file,
+            is_drift_track=is_drift_track)
 
 
-@dask.delayed
 def spike_sort_electrode(animal, date, electrode_number, input_path,
-                         output_path, metrics_input='metrics_merged.json',
-                         metrics_output='metrics_merged_tagged.json',
-                         firing_rate_thresh=0.01, isolation_thresh=0.95,
+                         output_path, firing_rate_thresh=0.01,
+                         isolation_thresh=0.97,
                          noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                          extract_marks=True, extract_clips=True,
                          clip_size=45, freq_min=300, freq_max=6000,
                          adjacency_radius=-1, detect_threshold=3,
-                         detect_sign=-1, sampling_rate=30000, geom=None):
+                         detect_sign=-1, sampling_rate=30000, geom=None,
+                         is_drift_track=True):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -130,8 +129,6 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     electrode_number : int
     input_path : str
     output_path : str
-    metrics_input : str, optional
-    metrics_output : str, optional
     firing_rate_thresh : float, optional
     isolation_thresh : float, optional
     noise_overlap_thresh : float, optional
@@ -157,7 +154,8 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
         Number of samples per second.
     geom : ndarray or None, shape (n_contacts, 2), optional
         Geometry of the electrode. Important for probes.
-
+    is_drift_track : bool, optional
+        Use drift tracking.
     '''
     date = str(date)
 
@@ -211,14 +209,23 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
 
     logger.info(
         f'{animal} {date} nt{electrode_number} sorting spikes...')
-    pyp.ms4_sort_on_segs(
-        dataset_dir=mountain_mda_electrode_dir,
-        output_dir=mountain_out_electrode_dir,
-        geom=geom,
-        adjacency_radius=adjacency_radius,
-        detect_threshold=detect_threshold,
-        detect_sign=detect_sign,
-        mda_opts=mda_opts)
+    if is_drift_track:
+        pyp.ms4_sort_on_segs(
+            dataset_dir=mountain_mda_electrode_dir,
+            output_dir=mountain_out_electrode_dir,
+            geom=geom,
+            adjacency_radius=adjacency_radius,
+            detect_threshold=detect_threshold,
+            detect_sign=detect_sign,
+            mda_opts=mda_opts)
+    else:
+        pyp.ms4_sort_full(
+            dataset_dir=mountain_mda_electrode_dir,
+            output_dir=mountain_out_electrode_dir,
+            geom=None,
+            adjacency_radius=adjacency_radius,
+            detect_threshold=detect_threshold,
+            detect_sign=detect_sign)
 
     logger.info(
         f'{animal} {date} nt{electrode_number} merging burst parents...')
@@ -231,8 +238,8 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     pyp.add_curation_tags(
         dataset_dir=mountain_out_electrode_dir,
         output_dir=mountain_out_electrode_dir,
-        metrics_input=metrics_input,
-        metrics_output=metrics_output,
+        metrics_input=METRICS_INPUT,
+        metrics_output=METRICS_OUTPUT,
         firing_rate_thresh=firing_rate_thresh,
         isolation_thresh=isolation_thresh,
         noise_overlap_thresh=noise_overlap_thresh,
@@ -291,7 +298,9 @@ def get_mda_files_dataframe(data_path, recursive=False):
 
     geom_df = get_geom_files_dataframe(data_path, recursive=recursive)
 
-    return mda_df.join(geom_df).replace(dict(geom_absolute_filepath={np.nan: None}))
+    return (mda_df
+            .join(geom_df)
+            .replace(dict(geom_absolute_filepath={np.nan: None})))
 
 
 def _get_mda_file_information(mda_file):

@@ -258,7 +258,7 @@ def get_mda_files_dataframe(data_path, recursive=False):
     file_info = [_get_mda_file_information(mda_file) for mda_file in mda_files
                  if _get_mda_file_information(mda_file) is not None]
     COLUMNS = ['animal', 'date', 'epoch', 'electrode_number', 'task',
-               'filepath']
+               'mda_filepath']
     mda_df = (pd.DataFrame(file_info, columns=COLUMNS)
               .set_index(['animal', 'date', 'epoch', 'electrode_number'])
               .sort_index())

@@ -2,7 +2,6 @@ import glob
 import json
 import logging
 import os
-import subprocess
 
 import numpy as np
 import pandas as pd
@@ -12,30 +11,6 @@ import franklab_mountainsort.ms4_franklab_pyplines as pyp
 METRICS_INPUT = 'metrics_merged.json'
 METRICS_OUTPUT = 'metrics_merged_tagged.json'
 MS_IN_SECOND = 1000
-
-
-def move_mda_data(source_animal_path, target_animal_path, animal, dates):
-    '''Move data from preprocessing to scratch.
-
-    Parameters
-    ----------
-    source_animal_path : str
-    target_animal_path : str
-    animal : str
-    dates : list of int
-
-    '''
-    for date in dates:
-        date = str(date)
-        source_mda_paths = glob.glob(
-            os.path.join(source_animal_path, date, '*.mda'))
-        source_mda_paths.sort()
-        for source_path in source_mda_paths:
-            target_dir = os.path.join(target_animal_path, date)
-            os.makedirs(target_dir, exist_ok=True)
-            logging.info(f'\nCopying {source_path} to {target_dir}\n')
-            subprocess.run(
-                f'rsync -avP {source_path} {target_dir}', shell=True)
 
 
 def spike_sort_all(mda_file_info, input_path, output_path,

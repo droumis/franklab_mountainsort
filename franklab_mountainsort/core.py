@@ -276,10 +276,8 @@ def _get_mda_file_information(mda_file):
         date, epoch = int(date), int(epoch)
         task, electrode_name, _ = other.split('.')
         electrode_number = int(electrode_name.strip('nt'))
-        file_path = os.path.abspath(os.path.join(
-            animal, 'preprocessing', str(date), os.path.basename(mda_file)))
 
-        return animal, date, epoch, electrode_number, task, file_path
+        return animal, date, epoch, electrode_number, task, mda_file
     except ValueError:
         pass
 

@@ -352,9 +352,9 @@ def _get_geom_file_information(geom_file):
         *_, animal, _, date, _, electrode_number, _ = geom_file.split('/')
         electrode_number = int(electrode_number.strip('nt'))
         date = int(date)
-        relative_filepath = os.path.abspath(geom_file)
+        geom_absolute_filepath = os.path.abspath(geom_file)
 
-        return animal, date, electrode_number, relative_filepath
+        return animal, date, electrode_number, geom_absolute_filepath
     except ValueError:
         pass
 

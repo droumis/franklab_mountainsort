@@ -132,49 +132,42 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
     date = str(date)
 
     # Setup log file
-    log_directory = os.path.join(mountainlab_output_folder, 'logs')
-    os.makedirs(log_directory, exist_ok=True)
+    mountain_out_electrode_dir = os.path.join(
+        mountainlab_output_folder, date, f'nt{electrode_number}')
+    os.makedirs(mountain_out_electrode_dir, exist_ok=True)
 
-    logger = create_file_logger(animal, date, electrode_number, log_directory)
+    logger = create_file_logger(
+        animal, date, electrode_number, mountain_out_electrode_dir)
 
     logger.info(
         f'Processing animal: {animal}, date: {date}, '
         f'electrode: {electrode_number}')
     logger.info(f'Parameters: {locals()}')
 
-    mountain_mda_electrode_dir = os.path.join(
-        preprocessing_folder, date, f'{date}_{animal}.mountain',
-        f'nt{electrode_number}')
     mda_opts = {'anim': animal,
                 'date': date,
                 'ntrode': electrode_number,
                 'data_location': preprocessing_folder}
-    raw_mda = os.path.join(mountain_mda_electrode_dir, 'raw.mda')
+    raw_mda = os.path.join(mountain_out_electrode_dir, 'raw.mda')
 
     # Concatenate mda files from the same epoch
     if not os.path.isfile(raw_mda):
         logger.info('Concatenated .mda file does not exist.'
                     f'Creating {raw_mda}')
-        os.makedirs(mountain_mda_electrode_dir, exist_ok=True)
         # create params if it doesn't exist
         params_file = os.path.join(
-            mountain_mda_electrode_dir, 'params.json')
+            mountain_out_electrode_dir, 'params.json')
         if not os.path.isfile(params_file):
             params = {'samplerate': sampling_rate}
             with open(params_file, 'w') as f:
                 json.dump(params, f, indent=4, sort_keys=True)
-        pyp.concat_epochs(dataset_dir=mountain_mda_electrode_dir,
+        pyp.concat_epochs(dataset_dir=mountain_out_electrode_dir,
                           mda_opts=mda_opts)
-
-    # Make sure .mountain output directory exists
-    mountain_out_electrode_dir = os.path.join(
-        mountainlab_output_folder, date, f'nt{electrode_number}')
-    os.makedirs(mountain_out_electrode_dir, exist_ok=True)
 
     logger.info(
         f'{animal} {date} nt{electrode_number} preprocessing waveforms...')
     pyp.filt_mask_whiten(
-        dataset_dir=mountain_mda_electrode_dir,
+        dataset_dir=mountain_out_electrode_dir,
         output_dir=mountain_out_electrode_dir,
         freq_min=freq_min,
         freq_max=freq_max)
@@ -183,7 +176,7 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
         f'{animal} {date} nt{electrode_number} sorting spikes...')
     if drift_track:
         pyp.ms4_sort_on_segs(
-            dataset_dir=mountain_mda_electrode_dir,
+            dataset_dir=mountain_out_electrode_dir,
             output_dir=mountain_out_electrode_dir,
             geom=geom,
             adjacency_radius=adjacency_radius,
@@ -192,7 +185,7 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
             mda_opts=mda_opts)
     else:
         pyp.ms4_sort_full(
-            dataset_dir=mountain_mda_electrode_dir,
+            dataset_dir=mountain_out_electrode_dir,
             output_dir=mountain_out_electrode_dir,
             geom=None,
             adjacency_radius=adjacency_radius,
@@ -202,7 +195,7 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
     logger.info(
         f'{animal} {date} nt{electrode_number} merging burst parents...')
     pyp.merge_burst_parents(
-        dataset_dir=mountain_mda_electrode_dir,
+        dataset_dir=mountain_out_electrode_dir,
         output_dir=mountain_out_electrode_dir)
 
     logger.info(

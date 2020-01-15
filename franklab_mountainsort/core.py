@@ -13,7 +13,7 @@ METRICS_OUTPUT = 'metrics_merged_tagged.json'
 MS_IN_SECOND = 1000
 
 
-def spike_sort_all(mda_file_info, preprocessing_folder, mountainlab_output_folder,
+def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
                    firing_rate_thresh=0.01, isolation_thresh=0.97,
                    noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                    extract_marks=True, extract_clips=True, clip_time=1.5,
@@ -26,8 +26,9 @@ def spike_sort_all(mda_file_info, preprocessing_folder, mountainlab_output_folde
     ----------
     mda_file_info : pandas.DataFrame
         Dataframe generated using function `get_mda_files_dataframe`
-    preprocessing_folder : str
-    mountainlab_output_folder : str
+    mountainlab_output_folder : None or str, optional
+        If None, goes to default location in animal directory. Else it should
+        be a path to a directory.
     firing_rate_thresh : float, optional
         Clusters less than the firing rate threshold is excluded (spikes / s )
     isolation_thresh : float, optional
@@ -72,6 +73,14 @@ def spike_sort_all(mda_file_info, preprocessing_folder, mountainlab_output_folde
             geom_file = electrodes_df.geom_filepath.unique()[0]
         except AttributeError:
             geom_file = electrodes_df.geom_filepath
+
+        common_dir = os.path.commonpath(electrodes_df.mda_filepath.tolist())
+        preprocessing_folder = os.path.abspath(
+            os.path.join(common_dir, os.pardir))
+        if mountainlab_output_folder is None:
+            animal_folder = os.path.join(common_dir, os.pardir, os.pardir)
+            mountainlab_output_folder = os.path.abspath(
+                os.path.join(animal_folder, 'mountainlab_output'))
 
         spike_sort_electrode(
             animal, date, electrode_number, preprocessing_folder,

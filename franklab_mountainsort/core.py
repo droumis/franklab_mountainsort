@@ -9,8 +9,8 @@ import pandas as pd
 
 import franklab_mountainsort.ms4_franklab_pyplines as pyp
 
-METRICS_INPUT = 'metrics_merged.json',
-METRICS_OUTPUT = 'metrics_merged_tagged.json',
+METRICS_INPUT = 'metrics_merged.json'
+METRICS_OUTPUT = 'metrics_merged_tagged.json'
 
 
 def move_mda_data(source_animal_path, target_animal_path, animal, dates):

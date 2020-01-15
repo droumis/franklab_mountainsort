@@ -265,7 +265,7 @@ def get_mda_files_dataframe(data_path, recursive=False):
     file_info = [_get_mda_file_information(mda_file) for mda_file in mda_files
                  if _get_mda_file_information(mda_file) is not None]
     COLUMNS = ['animal', 'date', 'epoch', 'electrode_number', 'task',
-               'relative_filepath']
+               'filepath']
     mda_df = (pd.DataFrame(file_info, columns=COLUMNS)
               .set_index(['animal', 'date', 'epoch', 'electrode_number'])
               .sort_index())
@@ -283,10 +283,10 @@ def _get_mda_file_information(mda_file):
         date, epoch = int(date), int(epoch)
         task, electrode_name, _ = other.split('.')
         electrode_number = int(electrode_name.strip('nt'))
-        relative_filepath = os.path.join(
-            animal, 'preprocessing', str(date), os.path.basename(mda_file))
+        file_path = os.path.abspath(os.path.join(
+            animal, 'preprocessing', str(date), os.path.basename(mda_file)))
 
-        return animal, date, epoch, electrode_number, task, relative_filepath
+        return animal, date, epoch, electrode_number, task, file_path
     except ValueError:
         pass
 

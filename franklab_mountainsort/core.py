@@ -198,7 +198,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
 
     # Make sure .mountain output directory exists
     mountain_out_electrode_dir = os.path.join(
-        output_path, date, 'ms4', f'nt{electrode_number}')
+        output_path, date, f'nt{electrode_number}')
     os.makedirs(mountain_out_electrode_dir, exist_ok=True)
 
     logger.info(

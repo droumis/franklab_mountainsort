@@ -70,6 +70,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
     if len(electrodes) == 0:
         logging.warn('No electrodes for sorting found. Check to see if your '
                      'input path is correctly pointing to the .mda files.')
+        return
 
     for (animal, date, electrode_number), electrodes_df in electrodes:
         try:

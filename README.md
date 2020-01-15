@@ -61,11 +61,11 @@ They can be used interchangeably when using `qt-mountainview`.
 ### Outputs from MountainSort
 For each electrode:
 + `raw.mda.prv`: The concatenated time series for one day of recording. It is located in the `../<animal>/preprocessing/<date>/<date>_<animal>.mountain` folder
-+ `clips.mda`: The waveforms around the spike times. Located in the `../<animal>/mountainlab_output/<data>/nt<number>/` folder.
-+ `filt.mda.prv`: The time series after it has been bandpass filtered.  Located in the `../<animal>/mountainlab_output/<data>/nt<number>/` folder.
-+ `firings_burst_merged.mda`: The firings file after burst merge processing.  Located in the `../<animal>/mountainlab_output/<data>/nt<number>/` folder.
-+ `firings_raw.mda`: This contains the actual spike timing info that you care most about [electrode; time;label x #events….] for ALL detected events, regardless of cluster quality.  Located in the `../<animal>/mountainlab_output/<data>/nt<number>/` folder.
-+ `metrics_merged.json`: This contains the metrics for the curated clusters, such as isolation scores, noise overlap, SNR, and more. Located in the `../<animal>/mountainlab_output/<data>/nt<number>/` folder.
-+ `metrics_merged_tagged.json`: Same as metrics merged but with tags. Located in the `../<animal>/mountainlab_output/<data>/nt<number>/` folder.
-+ `metrics_raw.json`: Metrics for all the original clusters. Located in the `../<animal>/mountainlab_output/<data>/nt<number>/` folder.
-+ `pre.mda.prv`: The time series after it has been bandpass filtered and whitened. Located in the `../<animal>/mountainlab_output/<data>/nt<number>/` folder.
++ `clips.mda`: The waveforms around the spike times. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `filt.mda.prv`: The time series after it has been bandpass filtered.  Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `firings_burst_merged.mda`: The firings file after burst merge processing.  Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `firings_raw.mda`: This contains the actual spike timing info that you care most about [electrode; time;label x #events….] for ALL detected events, regardless of cluster quality.  Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `metrics_merged.json`: This contains the metrics for the curated clusters, such as isolation scores, noise overlap, SNR, and more. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `metrics_merged_tagged.json`: Same as metrics merged but with tags. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `metrics_raw.json`: Metrics for all the original clusters. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `pre.mda.prv`: The time series after it has been bandpass filtered and whitened. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.

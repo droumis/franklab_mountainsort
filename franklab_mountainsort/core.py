@@ -69,9 +69,9 @@ def spike_sort_all(mda_file_info, preprocessing_folder, mountainlab_output_folde
 
     for (animal, date, electrode_number), electrodes_df in electrodes:
         try:
-            geom_file = electrodes_df.geom_absolute_filepath.unique()[0]
+            geom_file = electrodes_df.geom_filepath.unique()[0]
         except AttributeError:
-            geom_file = electrodes_df.geom_absolute_filepath
+            geom_file = electrodes_df.geom_filepath
 
         spike_sort_electrode(
             animal, date, electrode_number, preprocessing_folder,
@@ -267,7 +267,7 @@ def get_mda_files_dataframe(data_path, recursive=False):
 
     return (mda_df
             .join(geom_df)
-            .replace(dict(geom_absolute_filepath={np.nan: None})))
+            .replace(dict(geom_filepath={np.nan: None})))
 
 
 def _get_mda_file_information(mda_file):
@@ -304,7 +304,7 @@ def get_geom_files_dataframe(data_path, recursive=False):
     file_info = [_get_geom_file_information(geom_file)
                  for geom_file in geom_files]
     COLUMNS = ['animal', 'date', 'electrode_number',
-               'geom_absolute_filepath']
+               'geom_filepath']
     return (pd.DataFrame(file_info, columns=COLUMNS)
             .set_index(['animal', 'date', 'electrode_number'])
             .sort_index())
@@ -315,9 +315,9 @@ def _get_geom_file_information(geom_file):
         *_, animal, _, date, _, electrode_number, _ = geom_file.split('/')
         electrode_number = int(electrode_number.strip('nt'))
         date = int(date)
-        geom_absolute_filepath = os.path.abspath(geom_file)
+        geom_filepath = os.path.abspath(geom_file)
 
-        return animal, date, electrode_number, geom_absolute_filepath
+        return animal, date, electrode_number, geom_filepath
     except ValueError:
         pass
 

@@ -11,6 +11,7 @@ import franklab_mountainsort.ms4_franklab_pyplines as pyp
 
 METRICS_INPUT = 'metrics_merged.json'
 METRICS_OUTPUT = 'metrics_merged_tagged.json'
+MS_IN_SECOND = 1000
 
 
 def move_mda_data(source_animal_path, target_animal_path, animal, dates):
@@ -40,10 +41,10 @@ def move_mda_data(source_animal_path, target_animal_path, animal, dates):
 def spike_sort_all(mda_file_info, input_path, output_path,
                    firing_rate_thresh=0.01, isolation_thresh=0.97,
                    noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
-                   extract_marks=True, extract_clips=True,
-                   clip_size=45, freq_min=300, freq_max=6000,
-                   adjacency_radius=-1, detect_threshold=3, detect_sign=-1,
-                   sampling_rate=30000, is_drift_track=True):
+                   extract_marks=True, extract_clips=True, clip_time=1.5,
+                   freq_min=300, freq_max=6000, adjacency_radius=-1,
+                   detect_threshold=3, detect_sign=-1, sampling_rate=30000,
+                   is_drift_track=True):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -61,8 +62,8 @@ def spike_sort_all(mda_file_info, input_path, output_path,
     extract_marks : bool, optional
     extract_clips : bool, optional
         Extract the spike waveform around a spike.
-    clip_size : float, optional
-         Number of samples around each spike.
+    clip_time : float, optional
+         Time (in ms) to extract around each spike.
     freq_min : float, optional
         The highpass or low cutoff of the filter in Hz.
     freq_max : float, optional
@@ -106,6 +107,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
             output_path, firing_rate_thresh, isolation_thresh,
             noise_overlap_thresh, peak_snr_thresh,
             extract_marks, extract_clips, clip_size, freq_min,
+            extract_marks, extract_clips, clip_time, freq_min,
             freq_max, adjacency_radius, detect_threshold,
             detect_sign, sampling_rate, geom=geom_file,
             is_drift_track=is_drift_track)
@@ -116,7 +118,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
                          isolation_thresh=0.97,
                          noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                          extract_marks=True, extract_clips=True,
-                         clip_size=45, freq_min=300, freq_max=6000,
+                         clip_time=1.5, freq_min=300, freq_max=6000,
                          adjacency_radius=-1, detect_threshold=3,
                          detect_sign=-1, sampling_rate=30000, geom=None,
                          is_drift_track=True):
@@ -135,8 +137,8 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     peak_snr_thresh : float, optional
     extract_marks : bool, optional
     extract_clips : bool, optional
-    clip_size : float, optional
-         The size of extract clips around each spike in samples.
+    clip_time : float, optional
+         Time (in ms) to extract around each spike.
     freq_min : float, optional
         The highpass or low cutoff of the filter in Hz.
     freq_max : float, optional
@@ -254,6 +256,8 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     if extract_clips:
         logger.info(
             f'{animal} {date} nt{electrode_number} extracting clips...')
+        clip_size = np.ceil(clip_time * sampling_rate /
+                            MS_IN_SECOND).astype(int)
         pyp.extract_clips(dataset_dir=mountain_out_electrode_dir,
                           output_dir=mountain_out_electrode_dir,
                           clip_size=clip_size)

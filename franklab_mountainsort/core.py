@@ -18,8 +18,8 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
                    noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                    extract_marks=True, extract_clips=True, clip_time=1.5,
                    freq_min=300, freq_max=6000, adjacency_radius=-1,
-                   detect_threshold=3, detect_sign=-1, sampling_rate=30000,
-                   drift_track=True):
+                   detect_threshold=3, detect_interval=10, detect_sign=-1,
+                   sampling_rate=30000, drift_track=True):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -50,6 +50,9 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
         tetrodes).
     detect_threshold : float, optional
         Spike detection threshold in standard deviations.
+    detect_interval : int, optional
+        Minimum number of timepoints between events detected on the same
+        channel.
     detect_sign : int, optional
          The direction of spike to detect (-1 for negative, 1 for positive,
          0 for both). -1 is recommended for most recordings.
@@ -87,7 +90,7 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
             mountainlab_output_folder, firing_rate_thresh, isolation_thresh,
             noise_overlap_thresh, peak_snr_thresh,
             extract_marks, extract_clips, clip_time, freq_min,
-            freq_max, adjacency_radius, detect_threshold,
+            freq_max, adjacency_radius, detect_threshold, detect_interval,
             detect_sign, sampling_rate, geom=geom_file,
             drift_track=drift_track)
 
@@ -99,8 +102,8 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
                          extract_marks=True, extract_clips=True,
                          clip_time=1.5, freq_min=300, freq_max=6000,
                          adjacency_radius=-1, detect_threshold=3,
-                         detect_sign=-1, sampling_rate=30000, geom=None,
-                         drift_track=True):
+                         detect_interval=10, detect_sign=-1,
+                         sampling_rate=30000, geom=None, drift_track=True):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -128,6 +131,9 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
         tetrodes).
     detect_threshold : float, optional
         Spike detection threshold in standard deviations.
+    detect_interval : int, optional
+        Minimum number of timepoints between events detected on the same
+        channel.
     detect_sign : int, optional
          The direction of spike to detect (-1 for negative, 1 for positive,
          0 for both). -1 is recommended for most recordings.
@@ -190,6 +196,7 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
             geom=geom,
             adjacency_radius=adjacency_radius,
             detect_threshold=detect_threshold,
+            detect_interval=detect_interval,
             detect_sign=detect_sign,
             mda_opts=mda_opts)
     else:
@@ -199,6 +206,7 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
             geom=None,
             adjacency_radius=adjacency_radius,
             detect_threshold=detect_threshold,
+            detect_interval=detect_interval,
             detect_sign=detect_sign)
 
     logger.info(

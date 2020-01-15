@@ -44,7 +44,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
                    extract_marks=True, extract_clips=True, clip_time=1.5,
                    freq_min=300, freq_max=6000, adjacency_radius=-1,
                    detect_threshold=3, detect_sign=-1, sampling_rate=30000,
-                   is_drift_track=True):
+                   drift_track=True):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -79,7 +79,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
          0 for both). -1 is recommended for most recordings.
     sampling_rate : int, optional
         Number of samples per second.
-    is_drift_track : bool, optional
+    drift_track : bool, optional
         Use drift tracking.
     '''
     electrodes = mda_file_info.groupby(
@@ -109,7 +109,7 @@ def spike_sort_all(mda_file_info, input_path, output_path,
             extract_marks, extract_clips, clip_time, freq_min,
             freq_max, adjacency_radius, detect_threshold,
             detect_sign, sampling_rate, geom=geom_file,
-            is_drift_track=is_drift_track)
+            drift_track=drift_track)
 
 
 def spike_sort_electrode(animal, date, electrode_number, input_path,
@@ -120,7 +120,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
                          clip_time=1.5, freq_min=300, freq_max=6000,
                          adjacency_radius=-1, detect_threshold=3,
                          detect_sign=-1, sampling_rate=30000, geom=None,
-                         is_drift_track=True):
+                         drift_track=True):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -155,7 +155,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
         Number of samples per second.
     geom : ndarray or None, shape (n_contacts, 2), optional
         Geometry of the electrode. Important for probes.
-    is_drift_track : bool, optional
+    drift_track : bool, optional
         Use drift tracking.
     '''
     date = str(date)
@@ -210,7 +210,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
 
     logger.info(
         f'{animal} {date} nt{electrode_number} sorting spikes...')
-    if is_drift_track:
+    if drift_track:
         pyp.ms4_sort_on_segs(
             dataset_dir=mountain_mda_electrode_dir,
             output_dir=mountain_out_electrode_dir,

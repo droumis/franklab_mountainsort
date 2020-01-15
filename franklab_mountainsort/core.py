@@ -13,7 +13,7 @@ METRICS_OUTPUT = 'metrics_merged_tagged.json'
 MS_IN_SECOND = 1000
 
 
-def spike_sort_all(mda_file_info, input_path, output_path,
+def spike_sort_all(mda_file_info, preprocessing_folder, mountainlab_output_folder,
                    firing_rate_thresh=0.01, isolation_thresh=0.97,
                    noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                    extract_marks=True, extract_clips=True, clip_time=1.5,
@@ -26,8 +26,8 @@ def spike_sort_all(mda_file_info, input_path, output_path,
     ----------
     mda_file_info : pandas.DataFrame
         Dataframe generated using function `get_mda_files_dataframe`
-    input_path : str
-    output_path : str
+    preprocessing_folder : str
+    mountainlab_output_folder : str
     firing_rate_thresh : float, optional
         Clusters less than the firing rate threshold is excluded (spikes / s )
     isolation_thresh : float, optional
@@ -74,8 +74,8 @@ def spike_sort_all(mda_file_info, input_path, output_path,
             geom_file = electrodes_df.geom_absolute_filepath
 
         spike_sort_electrode(
-            animal, date, electrode_number, input_path,
-            output_path, firing_rate_thresh, isolation_thresh,
+            animal, date, electrode_number, preprocessing_folder,
+            mountainlab_output_folder, firing_rate_thresh, isolation_thresh,
             noise_overlap_thresh, peak_snr_thresh,
             extract_marks, extract_clips, clip_time, freq_min,
             freq_max, adjacency_radius, detect_threshold,
@@ -83,8 +83,8 @@ def spike_sort_all(mda_file_info, input_path, output_path,
             drift_track=drift_track)
 
 
-def spike_sort_electrode(animal, date, electrode_number, input_path,
-                         output_path, firing_rate_thresh=0.01,
+def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
+                         mountainlab_output_folder, firing_rate_thresh=0.01,
                          isolation_thresh=0.97,
                          noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                          extract_marks=True, extract_clips=True,
@@ -99,8 +99,8 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     animal : str
     date : str
     electrode_number : int
-    input_path : str
-    output_path : str
+    preprocessing_folder : str
+    mountainlab_output_folder : str
     firing_rate_thresh : float, optional
     isolation_thresh : float, optional
     noise_overlap_thresh : float, optional
@@ -132,7 +132,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     date = str(date)
 
     # Setup log file
-    log_directory = os.path.join(output_path, 'logs')
+    log_directory = os.path.join(mountainlab_output_folder, 'logs')
     os.makedirs(log_directory, exist_ok=True)
 
     logger = create_file_logger(animal, date, electrode_number, log_directory)
@@ -143,12 +143,12 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
     logger.info(f'Parameters: {locals()}')
 
     mountain_mda_electrode_dir = os.path.join(
-        input_path, date, f'{date}_{animal}.mountain',
+        preprocessing_folder, date, f'{date}_{animal}.mountain',
         f'nt{electrode_number}')
     mda_opts = {'anim': animal,
                 'date': date,
                 'ntrode': electrode_number,
-                'data_location': input_path}
+                'data_location': preprocessing_folder}
     raw_mda = os.path.join(mountain_mda_electrode_dir, 'raw.mda')
 
     # Concatenate mda files from the same epoch
@@ -168,7 +168,7 @@ def spike_sort_electrode(animal, date, electrode_number, input_path,
 
     # Make sure .mountain output directory exists
     mountain_out_electrode_dir = os.path.join(
-        output_path, date, f'nt{electrode_number}')
+        mountainlab_output_folder, date, f'nt{electrode_number}')
     os.makedirs(mountain_out_electrode_dir, exist_ok=True)
 
     logger.info(

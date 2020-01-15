@@ -60,7 +60,7 @@ They can be used interchangeably when using `qt-mountainview`.
 
 ### Outputs from MountainSort
 For each electrode:
-+ `raw.mda.prv`: The concatenated time series for one day of recording. It is located in the `../<animal>/preprocessing/<date>/<date>_<animal>.mountain` folder
++ `raw.mda.prv`: The concatenated time series for one day of recording. It is located in the `../<animal>/mountainlab_output/<date>/<date>_<animal>.mountain` folder
 + `clips.mda`: The waveforms around the spike times. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
 + `filt.mda.prv`: The time series after it has been bandpass filtered.  Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
 + `firings_burst_merged.mda`: The firings file after burst merge processing.  Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.

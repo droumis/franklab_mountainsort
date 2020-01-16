@@ -140,7 +140,7 @@ def mask_out_artifacts(timeseries, timeseries_out, threshold, interval_size,
 
 
 def ms4alg(timeseries, geom, firings_out, detect_sign, adjacency_radius,
-           detect_threshold, detect_interval, opts=None):
+           detect_threshold, detect_interval, num_workers, opts=None):
     '''
     Parameters
     ----------
@@ -160,6 +160,7 @@ def ms4alg(timeseries, geom, firings_out, detect_sign, adjacency_radius,
           'adjacency_radius': adjacency_radius,
           'detect_interval': detect_interval,
           'detect_threshold': detect_threshold,
+          'num_workers': num_workers,
           }
     return mlp.runProcess(
         'ms4alg.sort',

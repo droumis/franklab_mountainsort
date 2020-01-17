@@ -79,12 +79,12 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
             geom_file = electrodes_df.geom_filepath.unique()[0]
         except AttributeError:
             geom_file = electrodes_df.geom_filepath
-
-        common_dir = os.path.commonpath(electrodes_df.mda_filepath.tolist())
+        mda_filename = electrodes_df.mda_filepath.tolist()[0]
         preprocessing_folder = os.path.abspath(
-            os.path.join(common_dir, os.pardir))
+            os.path.join(mda_filename, os.pardir, os.pardir, os.pardir))
+
         if mountainlab_output_folder is None:
-            animal_folder = os.path.join(common_dir, os.pardir, os.pardir)
+            animal_folder = os.path.join(preprocessing_folder, os.pardir)
             mountainlab_output_folder = os.path.abspath(
                 os.path.join(animal_folder, 'mountainlab_output'))
 

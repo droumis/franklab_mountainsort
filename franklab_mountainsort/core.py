@@ -2,6 +2,7 @@ import glob
 import json
 import logging
 import os
+import pprint
 
 import numpy as np
 import pandas as pd
@@ -162,7 +163,7 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
     logger.info(
         f'Processing animal: {animal}, date: {date}, '
         f'electrode: {electrode_number}')
-    logger.info(f'Parameters: {locals()}')
+    logger.info(f'Parameters: \n{pprint.pformat(locals())}')
 
     mda_opts = {'anim': animal,
                 'date': date,

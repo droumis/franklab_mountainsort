@@ -4,10 +4,9 @@ import logging
 import os
 import pprint
 
+import franklab_mountainsort.ms4_franklab_pyplines as pyp
 import numpy as np
 import pandas as pd
-
-import franklab_mountainsort.ms4_franklab_pyplines as pyp
 
 METRICS_INPUT = 'metrics_merged.json'
 METRICS_OUTPUT = 'metrics_merged_tagged.json'
@@ -210,7 +209,7 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
         pyp.ms4_sort_full(
             dataset_dir=mountain_out_electrode_dir,
             output_dir=mountain_out_electrode_dir,
-            geom=None,
+            geom=geom,
             adjacency_radius=adjacency_radius,
             detect_threshold=detect_threshold,
             detect_interval=detect_interval,

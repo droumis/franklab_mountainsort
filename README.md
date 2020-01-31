@@ -69,3 +69,6 @@ For each electrode:
 + `metrics_merged_tagged.json`: Same as metrics merged but with tags. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
 + `metrics_raw.json`: Metrics for all the original clusters. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
 + `pre.mda.prv`: The time series after it has been bandpass filtered and whitened. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
+
+## Notes
++ Make sure the version of trodes you used to extract the data is the same that you recorded with.

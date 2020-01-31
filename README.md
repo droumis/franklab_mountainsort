@@ -8,19 +8,23 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
 ```bash
 git clone https://github.com/LorenFrankLab/franklab_mountainsort.git
 ```
-3. Create conda environment
+3. Go into the franklab_mountainsort folder
+```bash
+cd franklab_mountainsort
+```
+4. Create conda environment
 ```bash
 conda env create -f environment.yml
 ```
-4. activate conda environment
+5. activate conda environment
 ```bash
 conda activate franklab_mountainsort
 ```
-5. Install package code
+6. Install package code
 ```bash
 python setup.py install
 ```
-6. Check if everything installed correctly. Open jupyter notebook, jupyter lab, or python console. Try to import franklab_mountainsort.
+7. Check if everything installed correctly. Open jupyter notebook, jupyter lab, or python console. Try to import franklab_mountainsort.
 ```python
 import franklab_mountainsort
 ```
@@ -56,16 +60,12 @@ They can be used interchangeably when using `qt-mountainview`.
 
 ### Outputs from MountainSort
 For each electrode:
-+ `raw.mda.prv`: The concatenated time series for one day of recording. It is located in the `../<animal>/preprocessing/<date>/<date>_<animal>.mountain` folder
-+ `clips.mda`: The waveforms around the spike times. Located in the `../<animal>/mountainlab_output/<data>/ms4/nt<number>/` folder.
-+ `filt.mda.prv`: The time series after it has been bandpass filtered.  Located in the `../<animal>/mountainlab_output/<data>/ms4/nt<number>/` folder.
-+ `firings_burst_merged.mda`: The firings file after burst merge processing.  Located in the `../<animal>/mountainlab_output/<data>/ms4/nt<number>/` folder.
-+ `firings_raw.mda`: This contains the actual spike timing info that you care most about [electrode; time;label x #events….] for ALL detected events, regardless of cluster quality.  Located in the `../<animal>/mountainlab_output/<data>/ms4/nt<number>/` folder.
-+ `metrics_merged.json`: This contains the metrics for the curated clusters, such as isolation scores, noise overlap, SNR, and more. Located in the `../<animal>/mountainlab_output/<data>/ms4/nt<number>/` folder.
-+ `metrics_merged_tagged.json`: Same as metrics merged but with tags. Located in the `../<animal>/mountainlab_output/<data>/ms4/nt<number>/` folder.
-+ `metrics_raw.json`: Metrics for all the original clusters. Located in the `../<animal>/mountainlab_output/<data>/ms4/nt<number>/` folder.
-+ `pre.mda.prv`: The time series after it has been bandpass filtered and whitened. Located in the `../<animal>/mountainlab_output/<data>/ms4/nt<number>/` folder.
-
-
-## Notes
-+ Make sure the version of trodes you used to extract the data is the same that you recorded with.
++ `raw.mda.prv`: The concatenated time series for one day of recording. It is located in the `../<animal>/mountainlab_output/<date>/<date>_<animal>.mountain` folder
++ `clips.mda`: The waveforms around the spike times. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `filt.mda.prv`: The time series after it has been bandpass filtered.  Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `firings_burst_merged.mda`: The firings file after burst merge processing.  Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `firings_raw.mda`: This contains the actual spike timing info that you care most about [electrode; time;label x #events….] for ALL detected events, regardless of cluster quality.  Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `metrics_merged.json`: This contains the metrics for the curated clusters, such as isolation scores, noise overlap, SNR, and more. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `metrics_merged_tagged.json`: Same as metrics merged but with tags. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `metrics_raw.json`: Metrics for all the original clusters. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
++ `pre.mda.prv`: The time series after it has been bandpass filtered and whitened. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.

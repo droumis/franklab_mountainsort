@@ -144,7 +144,8 @@ def filt_mask_whiten(dataset_dir, output_dir, freq_min=300, freq_max=6000,
 
 
 def ms4_sort_full(dataset_dir, output_dir, geom=None, adjacency_radius=-1,
-                  detect_threshold=3, detect_sign=False, opts=None):
+                  detect_threshold=3, detect_interval=10, detect_sign=False,
+                  num_workers=2, opts=None):
     '''Sort the entire file as one mda
 
     Parameters
@@ -154,7 +155,9 @@ def ms4_sort_full(dataset_dir, output_dir, geom=None, adjacency_radius=-1,
     geom : None or list, optional
     adjacency_radius : float, optional
     detect_threshold : float, optional
+    detect_interval : int, optional
     detect_sign : bool, optional
+    num_workers : int, optional
     opt : dict or None, optional
 
     '''
@@ -172,6 +175,8 @@ def ms4_sort_full(dataset_dir, output_dir, geom=None, adjacency_radius=-1,
         adjacency_radius=adjacency_radius,
         detect_sign=int(detect_sign),
         detect_threshold=detect_threshold,
+        detect_interval=detect_interval,
+        num_workers=num_workers,
         opts=opts
     )
 
@@ -187,8 +192,9 @@ def ms4_sort_full(dataset_dir, output_dir, geom=None, adjacency_radius=-1,
 
 def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
                      adjacency_radius=-1, detect_threshold=3.0,
+                     detect_interval=10,
                      detect_sign=False, rm_segment_intermediates=True,
-                     opts=None, mda_opts=None):
+                     num_workers=2, opts=None, mda_opts=None):
     '''Sort by timesegments, then join any matching clusters
 
     Parameters
@@ -198,8 +204,10 @@ def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
     geom : None or list, optional
     adjacency_radius : float, optional
     detect_threshold : float, optional
+    detect_interval : int, optional
     detect_sign : bool, optional
     rm_segment_intermediates : bool, optional
+    num_workers : int, optional
     opt : dict or None, optional
     mda_opt : dict or None, optional
 
@@ -262,6 +270,8 @@ def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
             detect_sign=int(detect_sign),
             adjacency_radius=adjacency_radius,
             detect_threshold=detect_threshold,
+            detect_interval=detect_interval,
+            num_workers=num_workers,
             opts=opts)
 
         firings_list.append(firings_outpath)

@@ -27,6 +27,7 @@ from franklab_mountainsort.ms4_franklab_proc2py import (
     tagged_curation, whiten)
 from franklab_msdrift.p_anneal_segments import \
     anneal_segments as pyms_anneal_segs
+
 from franklab_mstaggedcuration.p_add_curation_tags import \
     add_curation_tags as pyms_add_curation_tags
 from franklab_mstaggedcuration.p_merge_burst_parents import \
@@ -369,9 +370,10 @@ def add_curation_tags(dataset_dir, output_dir, firing_rate_thresh=0.01,
         peak_snr_thresh=peak_snr_thresh, mv2file='')
 
 
-def recalc_metrics(dataset_dir, output_dir, firings_in='',
-                   metrics_to_update='', firing_rate_thresh=0.01,
-                   isolation_thresh=0.95, noise_overlap_thresh=0.03,
+def recalc_metrics(dataset_dir, output_dir, firings_in='firings_processed.json',
+                   metrics_to_update='metrics_tagged.json',
+                   firing_rate_thresh=0.01, isolation_thresh=0.95,
+                   noise_overlap_thresh=0.03,
                    peak_snr_thresh=1.5, mv2_file='', opts=None):
     '''post-merge, should recalculate metrics and update tags (both tags based
     on thresholds and any manually added ones, stored in the mv2)
@@ -392,11 +394,6 @@ def recalc_metrics(dataset_dir, output_dir, firings_in='',
     '''
     if opts is None:
         opts = {}
-    # untested!
-    if not firings_in:
-        firings_in = 'firings_processed.json'
-    if not metrics_to_update:
-        metrics_to_update = 'metrics_tagged.json'
 
     ds_params = read_dataset_params(dataset_dir)
 

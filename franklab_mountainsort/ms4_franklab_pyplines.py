@@ -385,8 +385,11 @@ def recalc_metrics(dataset_dir, output_dir, firings_in='firings_processed.json',
     firings_in : str, optional
     metrics_to_update : str, optional
     firing_rate_thresh : float, optional
+        Clusters less than the firing rate threshold is excluded (spikes / s )
     isolation_thresh : float, optional
+        Distance to a cluster of noise.
     noise_overlap_thresh : float, optional
+        Fraction of “noise events” in a cluster.
     peak_snr_thresh : float, optional
     mv2_file : str, optional
     opts : None or dict, optional

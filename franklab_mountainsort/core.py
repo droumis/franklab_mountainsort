@@ -35,6 +35,7 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
     isolation_thresh : float, optional
         Distance to a cluster of noise.
     noise_overlap_thresh : float, optional
+         Fraction of “noise events” in a cluster.
     peak_snr_thresh : float, optional
     extract_marks : bool, optional
     extract_clips : bool, optional

@@ -19,7 +19,8 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
                    extract_marks=True, extract_clips=True, clip_time=1.5,
                    freq_min=300, freq_max=6000, adjacency_radius=-1,
                    detect_threshold=3, detect_interval=10, detect_sign=-1,
-                   sampling_rate=30000, drift_track=True, num_workers=2):
+                   sampling_rate=30000, drift_track=True, burst_merge=False,
+                   num_workers=2):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -60,6 +61,8 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
         Number of samples per second.
     drift_track : bool, optional
         Use drift tracking.
+    burst_merge : bool, optional
+        Use burst merging
     num_workers : int, optional
         Number of compute threads to use for sorting.
     '''
@@ -94,7 +97,8 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
             extract_marks, extract_clips, clip_time, freq_min,
             freq_max, adjacency_radius, detect_threshold, detect_interval,
             detect_sign, sampling_rate, geom=geom_file,
-            drift_track=drift_track, num_workers=num_workers)
+            drift_track=drift_track, burst_merge=burst_merge,
+            num_workers=num_workers)
 
 
 def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
@@ -106,7 +110,7 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
                          adjacency_radius=-1, detect_threshold=3,
                          detect_interval=10, detect_sign=-1,
                          sampling_rate=30000, geom=None, drift_track=True,
-                         num_workers=2):
+                         burst_merge=False, num_workers=2):
     '''Runs mountain sort on all electrodes in `mda_file_info`
 
     Parameters
@@ -146,6 +150,8 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
         Geometry of the electrode. Important for probes.
     drift_track : bool, optional
         Use drift tracking.
+    burst_merge : bool, optional
+        Use burst merging
     num_workers : int, optional
         Number of compute threads to use for sorting.
     '''
@@ -216,23 +222,24 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
             num_workers=num_workers,
             detect_sign=detect_sign)
 
-    logger.info(
-        f'{animal} {date} nt{electrode_number} merging burst parents...')
-    pyp.merge_burst_parents(
-        dataset_dir=mountain_out_electrode_dir,
-        output_dir=mountain_out_electrode_dir)
+    if burst_merge:
+        logger.info(
+            f'{animal} {date} nt{electrode_number} merging burst parents...')
+        pyp.merge_burst_parents(
+            dataset_dir=mountain_out_electrode_dir,
+            output_dir=mountain_out_electrode_dir)
 
-    logger.info(
-        f'{animal} {date} nt{electrode_number} adding curation tags...')
-    pyp.add_curation_tags(
-        dataset_dir=mountain_out_electrode_dir,
-        output_dir=mountain_out_electrode_dir,
-        metrics_input=METRICS_INPUT,
-        metrics_output=METRICS_OUTPUT,
-        firing_rate_thresh=firing_rate_thresh,
-        isolation_thresh=isolation_thresh,
-        noise_overlap_thresh=noise_overlap_thresh,
-        peak_snr_thresh=peak_snr_thresh)
+        logger.info(
+            f'{animal} {date} nt{electrode_number} adding curation tags...')
+        pyp.add_curation_tags(
+            dataset_dir=mountain_out_electrode_dir,
+            output_dir=mountain_out_electrode_dir,
+            metrics_input=METRICS_INPUT,
+            metrics_output=METRICS_OUTPUT,
+            firing_rate_thresh=firing_rate_thresh,
+            isolation_thresh=isolation_thresh,
+            noise_overlap_thresh=noise_overlap_thresh,
+            peak_snr_thresh=peak_snr_thresh)
 
     if extract_marks:
         logger.info(

@@ -63,7 +63,7 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
     drift_track : bool, optional
         Use drift tracking.
     burst_merge : bool, optional
-        Use burst merging
+        Automatic merging of bursts.
     num_workers : int, optional
         Number of compute threads to use for sorting.
     '''

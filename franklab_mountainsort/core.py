@@ -272,6 +272,11 @@ def get_mda_files_dataframe(data_path, recursive=False):
     -------
     mda_files_dataframe : pandas.DataFrame
 
+    Notes
+    -----
+    Geom file is expected to be in the format:
+        {animal}/preprocessing/{date}/{date}_{animal}.mountain/nt{ntrode_number}/geom.csv
+
     Examples
     --------
     ```

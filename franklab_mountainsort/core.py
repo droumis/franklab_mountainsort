@@ -125,8 +125,8 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
     isolation_thresh : float, optional
     noise_overlap_thresh : float, optional
     peak_snr_thresh : float, optional
-        Peak absolute amplitude of the average waveform divided by
-        the peak standard deviation.
+        Lower threshold for peak SNR. Peak SNR is the peak absolute amplitude of
+        the average waveform divided by the peak standard deviation.
     extract_marks : bool, optional
     extract_clips : bool, optional
     clip_time : float, optional

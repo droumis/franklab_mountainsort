@@ -45,7 +45,7 @@ import franklab_mountainsort
 qt-mountainview --pre=pre.mda.prv --firings=firings_raw.mda --samplerate=30000 --cluster_metrics=metrics_raw.json
 ```
 
-## Usage Notes
+### Usage Note
 + Make sure the version of trodes you used to extract the data is the same that you recorded with.
 
 ### What does `spike_sort_all` do?

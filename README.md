@@ -36,7 +36,7 @@ import franklab_mountainsort
    - This will concatenate all epochs in a day
    - Bandpass filter and whiten the data
    - Run the isosplit clustering algorithm
-   - Merge clusters that look like they are from one cell that is bursting.
+   - Merge clusters that look like they are from one cell that is bursting (optional).
    - Add curation metrics and tags (statistics about each cluster and whether it is multiunit or not.).
    - Extract clip waveforms (optional)
    - Extract marks (optional)
@@ -45,6 +45,58 @@ import franklab_mountainsort
 qt-mountainview --pre=pre.mda.prv --firings=firings_raw.mda --samplerate=30000 --cluster_metrics=metrics_raw.json
 ```
 
+## Usage Notes
++ Make sure the version of trodes you used to extract the data is the same that you recorded with.
+
+### What does `spike_sort_all` do?
+For each set of channels on an electrode:
+1. Concatenate timeseries over epochs
+2. Bandpass filter
+	+ between 300 and 6000 Hz by default
+	+ relevant arguments: `freq_min`, `freq_max`, `sampling_rate`
+3. Mask out high voltage artifacts
+	+ remove chunks of data with amplitudes outside of the expected range by replacing these data by zeros
+	+ probably should expose these parameters
+4. Whiten
+	+ decorrelate signals
+
+If `drift_track`:
+
+5. Identify clusters on each epoch individually
+	+ using the isosplit clustering algorithm
+	+ relevant arguments: `adjacency_radius`, `detect_threshold`, `detect_interval`, `detect_sign`, `num_workers`
+6. Anneal segments
+	+ stich epochs back together while matching clusters from the different epochs
+	+ compares identified clusters across all epochs
+
+##
+7. Compute cluster metrics
+	+ `firing rate`
+	+ `isolation`: how well separated (in feature space) the cluster is from other nearby clusters
+	+ `noise_overlap`: estimates the fraction of “noise events” in a cluster, i.e., above-threshold events not associated with true firings of this or any of the other clustered units.
+	+ `peak_snr`: peak signal to noise ratio
+
+If `burst_merge`:
+
+8. Merge burst parents
+	+ automatically merge clusters that are demeed to have come from the same bursting cell
+##
+9. Add curation tags
+	+ Add tags to the metrics file to reflect which clusters should be
+    rejected based on curation criteria.
+    + `rejected`, `accepted`, `mua```
+    + relevant arguments: `firing_rate_thresh`, `isolation_thresh`, `noise_overlap_thresh`, `peak_snr_thresh`
+
+If `extract_marks`:
+
+10. Extract marks
+	+ extract the peak amplitude at the time of the spike
+
+If `extract_clips`:
+
+11. Extract clips
+	+ extract the waveforms around the time of the spike
+	+ relevant arguments: `clip_time`, `sampling_rate`
 
 ### Inputs to MountainSort
 + `*.mda`: time series for each recording.
@@ -69,6 +121,3 @@ For each electrode:
 + `metrics_merged_tagged.json`: Same as metrics merged but with tags. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
 + `metrics_raw.json`: Metrics for all the original clusters. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
 + `pre.mda.prv`: The time series after it has been bandpass filtered and whitened. Located in the `../<animal>/mountainlab_output/<date>/nt<number>/` folder.
-
-## Notes
-+ Make sure the version of trodes you used to extract the data is the same that you recorded with.

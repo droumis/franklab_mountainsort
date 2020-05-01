@@ -22,7 +22,7 @@ conda activate franklab_mountainsort
 ```
 6. Install package code
 ```bash
-python setup.py install
+python setup.py develop
 ```
 7. Check if everything installed correctly. Open jupyter notebook, jupyter lab, or python console. Try to import franklab_mountainsort.
 ```python

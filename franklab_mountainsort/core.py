@@ -232,17 +232,17 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
             dataset_dir=mountain_out_electrode_dir,
             output_dir=mountain_out_electrode_dir)
 
-    logger.info(
-        f'{animal} {date} nt{electrode_number} adding curation tags...')
-    pyp.add_curation_tags(
-        dataset_dir=mountain_out_electrode_dir,
-        output_dir=mountain_out_electrode_dir,
-        metrics_input=METRICS_INPUT,
-        metrics_output=METRICS_OUTPUT,
-        firing_rate_thresh=firing_rate_thresh,
-        isolation_thresh=isolation_thresh,
-        noise_overlap_thresh=noise_overlap_thresh,
-        peak_snr_thresh=peak_snr_thresh)
+        logger.info(
+            f'{animal} {date} nt{electrode_number} adding curation tags...')
+        pyp.add_curation_tags(
+            dataset_dir=mountain_out_electrode_dir,
+            output_dir=mountain_out_electrode_dir,
+            metrics_input=METRICS_INPUT,
+            metrics_output=METRICS_OUTPUT,
+            firing_rate_thresh=firing_rate_thresh,
+            isolation_thresh=isolation_thresh,
+            noise_overlap_thresh=noise_overlap_thresh,
+            peak_snr_thresh=peak_snr_thresh)
 
     if extract_marks:
         logger.info(

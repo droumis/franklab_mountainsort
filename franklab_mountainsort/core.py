@@ -8,8 +8,6 @@ import franklab_mountainsort.ms4_franklab_pyplines as pyp
 import numpy as np
 import pandas as pd
 
-METRICS_INPUT = 'metrics_merged.json'
-METRICS_OUTPUT = 'metrics_merged_tagged.json'
 MS_IN_SECOND = 1000
 
 
@@ -237,8 +235,8 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
         pyp.add_curation_tags(
             dataset_dir=mountain_out_electrode_dir,
             output_dir=mountain_out_electrode_dir,
-            metrics_input=METRICS_INPUT,
-            metrics_output=METRICS_OUTPUT,
+            metrics_input='metrics_merged.json',
+            metrics_output='metrics_merged_tagged.json',
             firing_rate_thresh=firing_rate_thresh,
             isolation_thresh=isolation_thresh,
             noise_overlap_thresh=noise_overlap_thresh,

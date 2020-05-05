@@ -17,6 +17,7 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
                    extract_marks=True, extract_clips=True, clip_time=1.5,
                    freq_min=300, freq_max=6000, adjacency_radius=-1,
                    detect_threshold=3, detect_interval=10, detect_sign=-1,
+                   artifacts_interval_size=2000, artifacts_threshold=5,
                    sampling_rate=30000, drift_track=True, burst_merge=False,
                    num_workers=2):
     '''Runs mountain sort on all electrodes in `mda_file_info`
@@ -95,7 +96,8 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
             noise_overlap_thresh, peak_snr_thresh,
             extract_marks, extract_clips, clip_time, freq_min,
             freq_max, adjacency_radius, detect_threshold, detect_interval,
-            detect_sign, sampling_rate, geom=geom_file,
+            detect_sign, artifacts_interval_size, artifacts_threshold,
+            sampling_rate, geom=geom_file,
             drift_track=drift_track, burst_merge=burst_merge,
             num_workers=num_workers)
 
@@ -108,6 +110,7 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
                          clip_time=1.5, freq_min=300, freq_max=6000,
                          adjacency_radius=-1, detect_threshold=3,
                          detect_interval=10, detect_sign=-1,
+                         artifacts_interval_size=2000, artifacts_threshold=5,
                          sampling_rate=30000, geom=None, drift_track=True,
                          burst_merge=False, num_workers=2):
     '''Runs mountain sort on all electrodes in `mda_file_info`
@@ -197,7 +200,9 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
         dataset_dir=mountain_out_electrode_dir,
         output_dir=mountain_out_electrode_dir,
         freq_min=freq_min,
-        freq_max=freq_max)
+        freq_max=freq_max,
+        artifacts_threshold=artifacts_threshold,
+        artifacts_interval_size=artifacts_interval_size)
 
     logger.info(
         f'{animal} {date} nt{electrode_number} sorting spikes...')

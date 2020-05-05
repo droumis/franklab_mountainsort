@@ -97,6 +97,7 @@ def concat_epochs(dataset_dir, mda_list=None, opts=None, mda_opts=None):
 
 
 def filt_mask_whiten(dataset_dir, output_dir, freq_min=300, freq_max=6000,
+                     artifacts_interval_size=2000, artifacts_threshold=5,
                      mask_artifacts=True, opts=None):
     '''
 
@@ -132,8 +133,8 @@ def filt_mask_whiten(dataset_dir, output_dir, freq_min=300, freq_max=6000,
         mask_out_artifacts(
             timeseries=os.path.join(output_dir, 'filt.mda.prv'),
             timeseries_out=os.path.join(output_dir, 'filt.mda.prv'),
-            threshold=5,
-            interval_size=2000,
+            threshold=artifacts_threshold,
+            interval_size=artifacts_interval_size,
             opts=opts
         )
     # Whiten

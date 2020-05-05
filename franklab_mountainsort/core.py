@@ -57,6 +57,8 @@ def spike_sort_all(mda_file_info, mountainlab_output_folder=None,
     detect_sign : int, optional
          The direction of spike to detect (-1 for negative, 1 for positive,
          0 for both). -1 is recommended for most recordings.
+    artifacts_threshold : float, optional
+    artifacts_interval_size : int, optional
     sampling_rate : int, optional
         Number of samples per second.
     drift_track : bool, optional

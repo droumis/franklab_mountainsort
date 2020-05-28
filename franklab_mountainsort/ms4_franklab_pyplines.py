@@ -230,7 +230,7 @@ def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
             'Finding list of mda file from mda directories of '
             f'date:{mda_opts["date"]}, ntrode:{mda_opts["ntrode"]}')
         mda_list = get_mda_list(
-            mda_opts['date'], mda_opts['ntrode'], mda_opts['data_location'])
+            mda_opts['anim'], mda_opts['date'], mda_opts['ntrode'], mda_opts['data_location'])
         # calculate time_offsets and total_duration
         sample_offsets, total_samples = get_epoch_offsets(
             dataset_dir=dataset_dir, opts={'mda_list': mda_list})

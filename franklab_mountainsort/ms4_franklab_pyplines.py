@@ -79,7 +79,7 @@ def concat_epochs(dataset_dir, mda_list=None, opts=None, mda_opts=None):
             f'...Finding list of mda files from mda directories of '
             f'date: {mda_opts["date"]}, ntrode: {mda_opts["ntrode"]}')
         mda_list = get_mda_list(
-            mda_opts['date'], mda_opts['ntrode'], mda_opts['data_location'])
+            mda_opts['anim'], mda_opts['date'], mda_opts['ntrode'], mda_opts['data_location'])
         str_start = [f'timeseries_list:{entry}' for entry in mda_list]
     elif isinstance(mda_list, str):
         logger.info('...Using mda files listed in prv file')

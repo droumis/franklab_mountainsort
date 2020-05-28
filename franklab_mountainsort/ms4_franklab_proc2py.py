@@ -348,7 +348,7 @@ def tagged_curation(cluster_metrics, metrics_tagged,
     )
 
 
-def get_mda_list(date, ntrode, data_location):
+def get_mda_list(animal, date, ntrode, data_location):
     '''
 
     Parameters
@@ -364,9 +364,7 @@ def get_mda_list(date, ntrode, data_location):
     '''
     date = str(date)
     mda_list = glob.glob(
-        os.path.join(data_location, date, '*', f'*.nt{ntrode}.mda'))
-    mda_list = [file for file in mda_list
-                if len(os.path.basename(file).split('_')) == 4]
+        os.path.join(data_location, date, '*.mda', f'{date}_{animal}_*.nt{ntrode}.mda'))
     mda_list.sort()
 
     return mda_list
@@ -377,7 +375,7 @@ def get_epoch_offsets(dataset_dir, opts=None):
     Parameters
     ----------
     dataset_dir : str
-    opts : None or dict, optional
+    opts : None or dict, optional*
 
     Returns
     -------

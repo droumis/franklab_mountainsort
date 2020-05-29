@@ -316,7 +316,7 @@ def get_mda_files_dataframe(data_path, recursive=False):
 
 def _get_mda_file_information(mda_file):
     mda_re = re.compile(
-        "^(?:(\d*)_)(?:(\w*)_)(\d*)(?:_(\w*)){0,1}(?:\.[a-zA-Z]*(\d*)){0,1}\.\w*$"
+        "^(?:(\d*)_)(?:(\w*)_)(\d*)(?:_(\w*)){0,1}(?:\.[a-zA-Z]*(\d*))\.\w*$"
     )
     try:
         match_re = mda_re.match(os.path.basename(mda_file))

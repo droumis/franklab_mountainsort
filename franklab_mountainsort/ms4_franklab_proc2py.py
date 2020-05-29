@@ -375,7 +375,7 @@ def get_epoch_offsets(dataset_dir, opts=None):
     Parameters
     ----------
     dataset_dir : str
-    opts : None or dict, optional*
+    opts : None or dict, optional
 
     Returns
     -------

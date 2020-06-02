@@ -314,6 +314,7 @@ def get_mda_files_dataframe(data_path, recursive=False):
             .join(geom_df)
             .replace(dict(geom_filepath={np.nan: None})))
 
+
 def _get_mda_file_information(mda_file):
     mda_re = re.compile(
         "^(?:(\d*)_)(?:(\w*)_)(\d*)(?:_(\w*)){0,1}(?:\.[a-zA-Z]*(\d*))\.\w*$"
@@ -321,10 +322,12 @@ def _get_mda_file_information(mda_file):
     try:
         match_re = mda_re.match(os.path.basename(mda_file))
         date, animal, epoch, task, electrode_number = match_re.groups()
-        date, epoch, electrode_number = int(date), int(epoch), int(electrode_number)
+        date, epoch, electrode_number = int(
+            date), int(epoch), int(electrode_number)
         return animal, date, epoch, electrode_number, task, mda_file
     except (ValueError, AttributeError):
         pass
+
 
 def get_geom_files_dataframe(data_path, recursive=False):
     '''

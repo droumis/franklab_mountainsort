@@ -305,6 +305,7 @@ def pyms_merge_burst_parents(firings, metrics, firings_out, opts=None):
         opts
     )
 
+
 def tagged_curation(cluster_metrics, metrics_tagged,
                     firing_rate_thresh=0.01, isolation_thresh=0.95,
                     noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
@@ -342,7 +343,6 @@ def tagged_curation(cluster_metrics, metrics_tagged,
         },
         opts
     )
-
 
 
 def get_mda_list(animal, date, ntrode, data_location):

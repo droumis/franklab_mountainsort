@@ -187,7 +187,7 @@ def compute_cluster_metrics(timeseries, firings, metrics_out, samplerate,
     firings : str
         Filepath to `firings_raw.mda` file
     metrics_out : str
-        Filepath to `metrics_raw.json` file
+        Filepath to the output metrics file
     samplerate : float
     opts : None or dict, optional
 
@@ -230,15 +230,14 @@ def compute_cluster_metrics(timeseries, firings, metrics_out, samplerate,
             'metrics_list': [metrics1, metrics2]
         },
         {
-            'metrics_out': metrics_out  # True #metrics_out
+            'metrics_out': metrics_out  # True
         },
         {},
         opts
     )
 
+
 # UNTESTED?UNUSED BY AKG
-
-
 def automated_curation(firings, cluster_metrics, firings_out, opts=None):
     '''
 
@@ -306,13 +305,11 @@ def pyms_merge_burst_parents(firings, metrics, firings_out, opts=None):
         opts
     )
 
-
 def tagged_curation(cluster_metrics, metrics_tagged,
                     firing_rate_thresh=0.01, isolation_thresh=0.95,
                     noise_overlap_thresh=0.03, peak_snr_thresh=1.5,
                     mv2file='', opts=None):
     '''
-
     Parameters
     ----------
     cluster_metrics : str
@@ -325,7 +322,6 @@ def tagged_curation(cluster_metrics, metrics_tagged,
     peak_snr_thresh : float, optional
     mv2file : str, optional
     opts : None or dict, optional
-
     '''
     if opts is None:
         opts = {}
@@ -348,11 +344,13 @@ def tagged_curation(cluster_metrics, metrics_tagged,
     )
 
 
+
 def get_mda_list(animal, date, ntrode, data_location):
     '''
 
     Parameters
     ----------
+    animal: str
     date : int
     ntrode : int
     data_location : str

@@ -4,8 +4,7 @@ import sys
 import numpy as np
 
 from pyms.common import TimeseriesChunkReader
-from pyms.mlpy import (DiskReadMda, DiskWriteMda, MdaHeader, readmda,
-                       writemda32, writemda64)
+from pyms.mlpy import DiskReadMda, DiskWriteMda, MdaHeader, readmda, writemda32
 
 parent_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(parent_path)

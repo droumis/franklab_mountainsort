@@ -11,7 +11,7 @@ sys.path.append(parent_path)
 
 
 processor_name = 'pyms.partial_timeseries'
-processor_version = '0.10'
+processor_version = '0.01'
 
 
 class TimeseriesChunkInfo:
@@ -25,7 +25,8 @@ class TimeseriesChunkInfo:
 
 class TimeseriesChunkReader:
     def __init__(self, chunk_size=0, chunk_size_mb=0, overlap_size=0, t1=-1, t2=-1, verbose=True):
-        # Note that the actual chunk size will be the maximum of chunk_size,overlap_size and chunk_size_mb*1e6/(M*4)
+        '''Note that the actual chunk size will be the maximum of chunk_size,
+        overlap_size and chunk_size_mb*1e6/(M*4)'''
         self._chunk_size = chunk_size
         self._chunk_size_mb = chunk_size_mb
         self._overlap_size = overlap_size
@@ -41,7 +42,8 @@ class TimeseriesChunkReader:
         else:
             X = mdafile_path_or_diskreadmda
         M, N = X.N1(), X.N2()
-        cs = max([self._chunk_size, int(self._chunk_size_mb * 1e6 / (M * 4)), M])
+        cs = max([self._chunk_size,
+                  int(self._chunk_size_mb * 1e6 / (M * 4)), M])
         if self._t1 < 0:
             self._t1 = 0
         if self._t2 < 0:

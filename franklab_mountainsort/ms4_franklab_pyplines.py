@@ -282,7 +282,6 @@ def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
         timeseries_list.append(pre_outpath)
 
     firings_out_final = os.path.join(output_dir, 'firings_raw.mda')
-    txt_out = os.path.join(output_dir, 'firings_raw_anneal_log.json')
     # sample_offsets have to be converted into a string to be properly passed
     # into the processor
     str_sample_offsets = ','.join(map(str, sample_offsets))
@@ -293,7 +292,6 @@ def ms4_sort_on_segs(dataset_dir, output_dir, geom=None,
         timeseries_list=timeseries_list,
         firings_list=firings_list,
         firings_out=firings_out_final,
-        text_out=txt_out,
         dmatrix_out=[],
         k1_dmatrix_out=[],
         k2_dmatrix_out=[],

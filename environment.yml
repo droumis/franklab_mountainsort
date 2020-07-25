@@ -16,6 +16,7 @@ dependencies:
 - franklab_mstaggedcuration
 - jupyter
 - jupyterlab
+- nb_conda
 - pandas
 - dask
 - pytest-cov

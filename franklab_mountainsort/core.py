@@ -1,8 +1,11 @@
+import functools
 import glob
 import json
 import logging
+import multiprocessing
 import os
 import pprint
+import re
 
 import franklab_mountainsort.ms4_franklab_pyplines as pyp
 import numpy as np
@@ -266,6 +269,139 @@ def spike_sort_electrode(animal, date, electrode_number, preprocessing_folder,
     logger.info(f'{animal} {date} nt{electrode_number} done...')
 
 
+def recalc_metrics_epoch(raw_mda_file_info, updated_mda='firings_processed.mda',
+                         mountainlab_output_folder=None,
+                         data_folder='', output_folder='',
+                         mv2_file='manualcuration',
+                         num_workers=4, rm_segment_intermediates=True,
+                         metrics_to_update='metrics_processed',
+                         firing_rate_thresh=0.01,
+                         isolation_thresh=0.95, noise_overlap_thresh=0.03,
+                         peak_snr_thresh=1.5, manual_only=True):
+    '''This function recalculates metrics for each epoch post (manual)
+    merge/delete, This function carries manual tags (stored in mv2) if you have
+    one but also update based on thresholds.
+    It takes in firing.mda files (for example, firing_processed.mda), cuts them
+    into epochs (which will be removed in the end if
+    rm_segment_intermediates=True), and then calculates metrics for each. When
+    having input spanning multiple electrodes, it will parallel for-loop
+    process each electrodes individually.
+
+    Output: the resulting .json files will be a folder named "metrics" under
+    the mountainsort_output/date/nt<xx>/ for Frank Lab users.
+
+    Parameters
+    ----------
+    raw_mda_file_info : mda info dataframe,
+        returned by get_mda_files_dataframe(), used for getting info's such as
+        animal', 'date', 'electrode_number'.
+        the minimum unit of recalculation is one animal-one day-one electrode.
+        That is, it has to be across all epochs.
+    updated_mda: str,
+        the firing mda filename after curation, excluding folder
+    mountainlab_output_folder: str, (optional, if you use Frank Lab ms4 folder structure)
+        the path to "mountainlab_output" folder.
+    data_folder: str, (optional, if you use the Frank Lab ms4 folder structure)
+        the path to the folder where "updated_mda" is.
+    output_folder: str, where to put output.
+        if '', the output will be a folder named "metrics" under the
+        mountainsort_output for Frank Lab uses
+    mv2_file: str, can be '' if mv2 file is not available.
+        (optional, default = 'manualcuration')
+        file of manual curated tags, MUST be put under "mountainlab_output_dir"
+    metrics_to_update (OUTPUT): str,
+        (optional, default = 'metrics_processed') str, the base file name for
+        the updated metrics .json files. The name for each electrode,
+        epoch is appended as: metrics_to_update+f'_nt{ntrode:02d}-epoch{segind + 1}'+'.json'
+    manual_only: Bool.
+        (optional, default = True) Setting True won't apply hard threshold and
+         will simply copy tags from mv2 if you supply any.
+        Setting False if you want to use default threshold lines to do the tags.
+    rm_segment_intermediates: Bool.
+        (optional, default = True) remove cut firing segments if True. Those
+        temporary files are in output_dir or mountainlab_output_folder
+    num_workers: int.
+        (optional, default = 4) Number of workers for parallel for loop.
+
+    automated thresholds, below are defaults:
+    firing_rate_thresh=0.01, float, spikes/s, clusters less than the firing
+    rate threshold is excluded
+    isolation_thresh=0.95, float, Fraction of events in a cluster that is
+    actually closer to other clusters
+    noise_overlap_thresh=0.03, float, Fraction of "noise events" in a cluster
+    peak_snr_thresh=1.5, float
+
+    '''
+
+    electrodes = raw_mda_file_info.groupby(
+        ['animal', 'date', 'electrode_number'])
+    logging.info(f'Recalculating metrics for {len(electrodes)} electrodes...')
+    logging.info(f'Temp directory: {os.getenv("ML_TEMPORARY_DIRECTORY")}')
+
+    if len(electrodes) == 0:
+        logging.warn('No electrodes for sorting found. Check to see if your '
+                     'input path is correctly pointing to the .mda files.')
+        return
+
+    if len(output_folder) > 0 and not os.path.isdir(output_folder):
+        try:
+            os.mkdir(output_folder)
+        except OSError:
+            print("Creation of the directory %s failed" % output_folder)
+        else:
+            print("Successfully created the directory %s " % output_folder)
+
+    params = []
+    for (animal, date, electrode_number), electrodes_df in electrodes:
+
+        # get preprocessing_folder, mountain_out_electrode_dir,data_folder_electrode
+        mda_filename = electrodes_df.mda_filepath.tolist()[0]
+        print('mda_filename', mda_filename)
+        preprocessing_folder = os.path.abspath(
+            os.path.join(mda_filename, os.pardir, os.pardir, os.pardir))
+        if mountainlab_output_folder is None:
+            animal_folder = os.path.join(preprocessing_folder, os.pardir)
+            mountainlab_output_folder = os.path.abspath(
+                os.path.join(animal_folder, 'mountainlab_output'))
+        date = str(date)
+        mountain_out_electrode_dir = os.path.join(
+            mountainlab_output_folder, date, f'nt{electrode_number}')
+        if len(data_folder) > 0:
+            data_folder_electrode = os.path.join(data_folder, animal, 'temp')
+        else:
+            data_folder_electrode = os.path.join(os.path.abspath(
+                os.path.join(preprocessing_folder, os.pardir)), 'temp')
+
+        # get raw mda address
+        raw_mda_opts = {'anim': animal,
+                        'date': date,
+                        'ntrode': electrode_number,
+                        'data_location': preprocessing_folder}
+
+        # Setup log file
+        log_file = os.path.join(mountainlab_output_folder,
+                                f'{animal}_{date}_nt{electrode_number}.log')
+        logger_e = logging.getLogger(log_file)
+        logger_e.info(
+            f'Recalculating animal: {animal}, date: {date}, '
+            f'electrode: {electrode_number}')
+        logger_e.info(f'Parameters: \n{pprint.pformat(locals())}')
+
+        params.append((data_folder_electrode,
+                       mountain_out_electrode_dir, output_folder, raw_mda_opts))
+
+    # Make partial so that multiprocessing can iterate through
+    helper = functools.partial(pyp.recalc_metrics_epoch_electrode, rm_segment_intermediates=rm_segment_intermediates,
+                               updated_mda=updated_mda, mv2_file=mv2_file, metrics_to_update=metrics_to_update, firing_rate_thresh=firing_rate_thresh,
+                               isolation_thresh=isolation_thresh, noise_overlap_thresh=noise_overlap_thresh,
+                               peak_snr_thresh=peak_snr_thresh, manual_only=manual_only)
+
+    pool = multiprocessing.Pool(num_workers)
+    pool.map(helper, params)
+    pool.close()
+    pool.join()
+
+
 def get_mda_files_dataframe(data_path, recursive=False):
     '''
 
@@ -315,14 +451,16 @@ def get_mda_files_dataframe(data_path, recursive=False):
 
 
 def _get_mda_file_information(mda_file):
+    mda_re = re.compile(
+        "^(?:(\d*)_)(?:(\w*)_)(\d*)(?:_(\w*)){0,1}(?:\.[a-zA-Z]*(\d*))\.\w*$"
+    )
     try:
-        date, animal, epoch, other = os.path.basename(mda_file).split('_')
-        date, epoch = int(date), int(epoch)
-        task, electrode_name, _ = other.split('.')
-        electrode_number = int(electrode_name.strip('nt'))
-
+        match_re = mda_re.match(os.path.basename(mda_file))
+        date, animal, epoch, task, electrode_number = match_re.groups()
+        date, epoch, electrode_number = int(
+            date), int(epoch), int(electrode_number)
         return animal, date, epoch, electrode_number, task, mda_file
-    except ValueError:
+    except (ValueError, AttributeError):
         pass
 
 
